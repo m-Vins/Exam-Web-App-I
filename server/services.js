@@ -80,8 +80,6 @@ function Services() {
         )
       );
 
-    console.log(courses);
-
     //check constraints
     for (const course of courses) {
       for (const incompatibleCourse of course.incompatibleCourses) {

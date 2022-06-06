@@ -36,3 +36,22 @@
     transform: rotate(360deg);
   }
 }
+
+.tableContainer {
+  height: 40vh;
+  overflow: scroll;
+}
+
+Table thead {
+  background-color: white !important;
+  position: sticky;
+  top: 0px;
+}
+
+.loginButton {
+  width: 100% !important;
+}
+
+.navbar {
+  background-color: rgb(171, 204, 212) !important;
+}

@@ -6,7 +6,12 @@ import "./App.css";
 import { useEffect, useState } from "react";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { Container, Col, Row } from "react-bootstrap";
-import { DefaultRoute, HomeRoute } from "./Components/ViewRoutes";
+import {
+  DefaultRoute,
+  HomeRoute,
+  LoginRoute,
+  PersonalHomeRoute,
+} from "./Components/ViewRoutes";
 import API from "./API";
 
 function App() {
@@ -25,7 +30,11 @@ function App() {
     <Container fluid>
       <BrowserRouter>
         <Routes>
-          <Route index element={<HomeRoute courses={courses} />}></Route>
+          <Route
+            index
+            element={<PersonalHomeRoute courses={courses} />}
+          ></Route>
+          <Route path="/login" element={<LoginRoute />} />
           <Route path="*" element={<DefaultRoute />} />
         </Routes>
       </BrowserRouter>

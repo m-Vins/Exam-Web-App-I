@@ -1,5 +1,9 @@
 import CourseTable from "./TableCompontens";
 import Navbar from "./NavbarComponents";
+import LogInForm from "./LoginFormComponents";
+import { Container, Col } from "react-bootstrap";
+
+import "../App.css";
 
 function DefaultRoute() {
   return (
@@ -13,12 +17,34 @@ function DefaultRoute() {
 function HomeRoute(props) {
   return (
     <>
-      <Navbar />
+      <Navbar searchBar />
       <CourseTable courses={props.courses} />
     </>
   );
 }
 
-function LoginRoute() {}
+function PersonalHomeRoute(props) {
+  return (
+    <>
+      <Navbar searchBar loginButton />
+      <Container className="tableContainer">
+        <CourseTable courses={props.courses} />
+      </Container>
+    </>
+  );
+}
 
-export { HomeRoute, DefaultRoute, LoginRoute };
+function LoginRoute() {
+  return (
+    <>
+      <Navbar />
+      <Container className="mt-5">
+        <Col md={{ span: 4, offset: 4 }}>
+          <LogInForm />
+        </Col>
+      </Container>
+    </>
+  );
+}
+
+export { HomeRoute, DefaultRoute, LoginRoute, PersonalHomeRoute };
