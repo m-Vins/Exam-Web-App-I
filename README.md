@@ -1,5 +1,6 @@
 # Exam #12345: "Exam Title"
-## Student: s123456 LASTNAME FIRSTNAME 
+
+## Student: s294999 MEZZELA VINCENZO
 
 ## React Client Application Routes
 
@@ -22,9 +23,41 @@
 
 ## Database Tables
 
-- Table `users` - contains xx yy zz
-- Table `something` - contains ww qq ss
-- ...
+##### Legend
+
+- **`primary key`**
+- **not null fields**
+- **_optional fields_**
+
+### COURSES
+
+- **`code`**
+- **name**
+- **credits**
+- **_preparatoryCourse_**
+- **_maxStudentsNumber_**
+
+### STUDENTS
+
+- **`id`**
+- **username**
+- **salt**
+- **hash**
+- **_studyplan_** can be
+  1. `part-time`
+  2. `full-time`
+  3. `NULL` in case the student haven't any studyplan, thus there should be no record in the **STUDY-PLANS** table with the relative **`studentID`**
+
+### STUDYPLANS
+
+- **`studentID`**
+- **`courseID`**
+- **permanent**
+
+### INCOMPATIBLECOURSES
+
+- **`code_1`**
+- **`code_2`**
 
 ## Main React Components
 
