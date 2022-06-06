@@ -1,0 +1,19 @@
+GET http://localhost:3001/api/courses HTTP/1.1
+
+###
+
+
+GET http://localhost:3001/api/students HTTP/1.1
+
+###
+
+GET http://localhost:3001/api/students/1/studyplan HTTP/1.1
+
+###
+POST http://localhost:3001/api/students/1/studyplan HTTP/1.1
+content-type: application/json
+
+{
+    "studyplan": "full-time",
+    "courses": ["01TXSOV","01TXYOV"]
+}
