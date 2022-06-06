@@ -30,8 +30,9 @@ function App() {
     <Container fluid>
       <BrowserRouter>
         <Routes>
+          <Route index element={<HomeRoute courses={courses} />}></Route>
           <Route
-            index
+            path="/student"
             element={<PersonalHomeRoute courses={courses} />}
           ></Route>
           <Route path="/login" element={<LoginRoute />} />

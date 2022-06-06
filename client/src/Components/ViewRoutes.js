@@ -17,8 +17,10 @@ function DefaultRoute() {
 function HomeRoute(props) {
   return (
     <>
-      <Navbar searchBar />
-      <CourseTable courses={props.courses} />
+      <Navbar searchBar logInButton />
+      <Container>
+        <CourseTable courses={props.courses} />
+      </Container>
     </>
   );
 }
@@ -28,7 +30,7 @@ function PersonalHomeRoute(props) {
     <>
       <Navbar searchBar logOutButton />
       <Container className="tableContainer">
-        <CourseTable courses={props.courses} />
+        <CourseTable courses={props.courses} loggedIn />
       </Container>
     </>
   );
