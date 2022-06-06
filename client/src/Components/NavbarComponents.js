@@ -28,13 +28,20 @@ function NavbarComponent(props) {
             </Form>
           </Col>
         )}
-        {props.loginButton && (
+        {(props.logInButton && (
           <Col className="d-flex justify-content-end">
             <Button className="ms-2 me-2" variant="outline-success">
               Login
             </Button>
           </Col>
-        )}
+        )) ||
+          (props.logOutButton && (
+            <Col className="d-flex justify-content-end">
+              <Button className="ms-2 me-2" variant="outline-danger">
+                Logout
+              </Button>
+            </Col>
+          ))}
       </Container>
     </Navbar>
   );
