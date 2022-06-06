@@ -61,12 +61,12 @@ function IncompatibleExam(props) {
   return (
     <>
       <OverlayTrigger placement="right" overlay={<Tooltip>Tooltip</Tooltip>}>
-        {!props.ok ? (
+        {props.ok ? (
           <Button size="sm" variant="danger">
             <i className="bi bi-exclamation-circle"></i>
           </Button>
         ) : (
-          <Button size="sm" variant="outline-succes">
+          <Button size="sm" variant="outline-success">
             <i className="bi bi-check2"></i>
           </Button>
         )}
