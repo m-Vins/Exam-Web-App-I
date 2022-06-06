@@ -26,7 +26,7 @@ function HomeRoute(props) {
 function PersonalHomeRoute(props) {
   return (
     <>
-      <Navbar searchBar loginButton />
+      <Navbar searchBar logOutButton />
       <Container className="tableContainer">
         <CourseTable courses={props.courses} />
       </Container>
