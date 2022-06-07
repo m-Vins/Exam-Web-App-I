@@ -5,7 +5,9 @@ import "./App.css";
 
 import { useEffect, useState } from "react";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
-import { Container, Col, Row } from "react-bootstrap";
+import { Container } from "react-bootstrap";
+import { ToastContainer, toast, Bounce } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import {
   DefaultRoute,
   HomeRoute,
@@ -27,17 +29,30 @@ function App() {
     try {
       const Student = await API.logIn({ username, password });
       setLoggedIn(true);
-      //TODO insert pop up
+      toast.success("Successfully logged in !", {
+        position: toast.POSITION.TOP_CENTER,
+      });
     } catch (err) {
-      //TODO pop up error
+      toast.error("Wrong credentials !", {
+        position: toast.POSITION.TOP_CENTER,
+      });
     }
+  };
+
+  const handleLogOut = async (credentials) => {
+    await API.logOut();
+    setLoggedIn(false);
   };
 
   useEffect(() => {
     const checkAuth = async () => {
-      await API.getUserInfo();
-      setLoggedIn(true);
-    }; //TODO insert a catch ?
+      try {
+        await API.getUserInfo();
+        setLoggedIn(true);
+      } catch (e) {
+        setLoggedIn(false);
+      }
+    };
     checkAuth();
   }, []);
 
@@ -47,16 +62,31 @@ function App() {
 
   return (
     <Container fluid>
+      <ToastContainer transition={Bounce} />
       <BrowserRouter>
         <Routes>
-          <Route index element={<HomeRoute courses={courses} />}></Route>
           <Route
-            path="/student"
-            element={<PersonalHomeRoute courses={courses} />}
+            index
+            element={
+              loggedIn ? (
+                <PersonalHomeRoute
+                  courses={courses}
+                  handleLogOut={handleLogOut}
+                />
+              ) : (
+                <HomeRoute courses={courses} />
+              )
+            }
           ></Route>
           <Route
             path="/login"
-            element={<LoginRoute handleLogIn={handleLogIn} />}
+            element={
+              loggedIn ? (
+                <Navigate replace to="/" />
+              ) : (
+                <LoginRoute handleLogIn={handleLogIn} />
+              )
+            }
           />
           <Route path="*" element={<DefaultRoute />} />
         </Routes>

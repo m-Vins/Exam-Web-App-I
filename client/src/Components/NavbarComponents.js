@@ -6,9 +6,11 @@ import {
   Form,
   FormControl,
 } from "react-bootstrap";
+import { useNavigate } from "react-router-dom";
 import "../App.css";
 
 function NavbarComponent(props) {
+  const navigate = useNavigate();
   return (
     <Navbar sticky="top" bg="light" expand="lg" className="mb-2 navbar">
       <Container fluid>
@@ -30,14 +32,28 @@ function NavbarComponent(props) {
         )}
         {(props.logInButton && (
           <Col className="d-flex justify-content-end">
-            <Button className="ms-2 me-2" variant="outline-success">
+            <Button
+              className="ms-2 me-2"
+              variant="outline-success"
+              onClick={(event) => {
+                event.preventDefault();
+                navigate("/login");
+              }}
+            >
               Login
             </Button>
           </Col>
         )) ||
           (props.logOutButton && (
             <Col className="d-flex justify-content-end">
-              <Button className="ms-2 me-2" variant="outline-danger">
+              <Button
+                className="ms-2 me-2"
+                variant="outline-danger"
+                onClick={(event) => {
+                  event.preventDefault();
+                  props.handleLogOut();
+                }}
+              >
                 Logout
               </Button>
             </Col>
