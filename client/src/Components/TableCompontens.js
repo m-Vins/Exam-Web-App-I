@@ -14,6 +14,8 @@ function CourseRow(props) {
         <td>{props.maxStudentsNumber}</td>
         {props.loggedIn && (
           <RowActions
+            deleteCourseStudyplan={props.deleteCourseStudyplan}
+            addCourseStudyplan={props.addCourseStudyplan}
             studyplan={props.studyplan}
             spcodes={props.spcodes}
             code={props.code}
@@ -38,7 +40,15 @@ function RowActions(props) {
   return (
     <td>
       {props.studyplan && (
-        <Button size="sm" variant="outline-danger" className="ms-1">
+        <Button
+          size="sm"
+          variant="outline-danger"
+          className="ms-1"
+          onClick={(event) => {
+            event.preventDefault();
+            props.deleteCourseStudyplan(props.code);
+          }}
+        >
           <i className="bi bi-x-lg"></i>
         </Button>
       )}
@@ -48,7 +58,10 @@ function RowActions(props) {
             size="sm"
             variant="outline-success"
             className="ms-1"
-            disabled={!ok}
+            onClick={(event) => {
+              event.preventDefault();
+              props.addCourseStudyplan(props.code);
+            }}
           >
             <i className="bi bi-plus"></i>
           </Button>
@@ -133,6 +146,7 @@ function CourseTable(props) {
         {props.courses.map((course) => {
           return (
             <CourseRow
+              addCourseStudyplan={props.addCourseStudyplan}
               spcodes={props.spcodes}
               loggedIn={props.loggedIn}
               key={course.code}
@@ -170,6 +184,7 @@ function StudyplanTable(props) {
           return (
             <CourseRow
               studyplan
+              deleteCourseStudyplan={props.deleteCourseStudyplan}
               loggedIn={props.loggedIn}
               key={course.code}
               code={course.code}

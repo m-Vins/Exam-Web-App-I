@@ -35,6 +35,11 @@ function PersonalHomeRoute(props) {
     setStudyplan(spcourses);
   };
 
+  const saveStudyplan = async () => {
+    await API.saveStudyplan();
+    getStudyplan();
+  };
+
   useEffect(() => {
     getStudyplan();
   }, []);
@@ -43,17 +48,35 @@ function PersonalHomeRoute(props) {
     studyplan.includes(course.code)
   );
 
+  const addCourseStudyplan = (courseCode) => {
+    setStudyplan((sp) => [...sp, courseCode]);
+  };
+
+  const deleteCourseStudyplan = (courseCode) => {
+    setStudyplan((sp) => sp.filter((c) => c != courseCode));
+  };
+
   return (
     <>
-      <Navbar searchBar logOutButton />
+      <Navbar searchBar logOutButton handleLogOut={props.handleLogOut} />
       <Container>
         <h3>Courses</h3>
         <Container className="tableContainer mb-5">
-          <CourseTable courses={props.courses} spcodes={studyplan} loggedIn />
+          <CourseTable
+            courses={props.courses}
+            spcodes={studyplan}
+            loggedIn
+            addCourseStudyplan={addCourseStudyplan}
+          />
         </Container>
         <h3>Study Plan</h3>
         <Container className="tableContainer">
-          <StudyplanTable courses={spcourses} studyplan loggedIn />
+          <StudyplanTable
+            courses={spcourses}
+            studyplan
+            loggedIn
+            deleteCourseStudyplan={deleteCourseStudyplan}
+          />
         </Container>
       </Container>
     </>
