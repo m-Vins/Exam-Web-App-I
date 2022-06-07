@@ -78,9 +78,9 @@ app.get("/api/studyplan", isLoggedIn, (req, res) => {
     .catch((err) => res.status(500).json(err));
 });
 
-app.post("/api/students/:studentID/studyplan", (req, res) => {
+app.post("/api/studyplan", (req, res) => {
   services
-    .addStudyPlan(req.params.studentID, req.body.studyplan, req.body.courses)
+    .addStudyPlan(req.user.id, req.body.studyplan, req.body.courses)
     .then(() => res.status(200).end())
     .catch((err) =>
       err.code && err.code <= 500
