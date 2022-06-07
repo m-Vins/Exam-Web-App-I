@@ -37,22 +37,25 @@ function RowActions(props) {
   const msg = ok ? "ok" : "already in studyplan";
   return (
     <td>
-      {props.studyplan || <CourseToolTip ok={ok} msg={msg} />}
       {props.studyplan && (
         <Button size="sm" variant="outline-danger" className="ms-1">
           <i className="bi bi-x-lg"></i>
         </Button>
       )}
-      {props.studyplan || (
-        <Button
-          size="sm"
-          variant="outline-success"
-          className="ms-1"
-          disabled={!ok}
-        >
-          <i className="bi bi-plus"></i>
-        </Button>
-      )}
+      {props.studyplan ||
+        (ok ? (
+          <Button
+            size="sm"
+            variant="outline-success"
+            className="ms-1"
+            disabled={!ok}
+          >
+            <i className="bi bi-plus"></i>
+          </Button>
+        ) : (
+          <CourseToolTip ok={ok} msg={msg} />
+        ))}
+
       {props.studyplan || (
         <Button
           size="sm"
@@ -99,11 +102,11 @@ function CourseToolTip(props) {
         overlay={<Tooltip>{props.msg}</Tooltip>}
       >
         {!props.ok ? (
-          <Button size="sm" variant="danger">
+          <Button className="ms-1" size="sm" variant="danger">
             <i className="bi bi-exclamation-circle"></i>
           </Button>
         ) : (
-          <Button size="sm" variant="outline-success">
+          <Button className="ms-1" size="sm" variant="outline-success">
             <i className="bi bi-check2"></i>
           </Button>
         )}

@@ -38,12 +38,12 @@
 }
 
 .tableContainer {
-  height: 40vh;
+  height: 35vh;
   overflow: scroll;
 }
 
 Table thead {
-  background-color: white !important;
+  background-color: rgb(171, 204, 212) !important;
   position: sticky;
   top: 0px;
 }
