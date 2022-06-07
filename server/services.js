@@ -10,6 +10,8 @@ const limits = {
 };
 
 function Services() {
+  this.getStudent = (username, password) =>
+    daoStudent.getStudent(username, password);
   this.listCourses = () =>
     daoCourses.listCourses().then((courses) =>
       Promise.all(
