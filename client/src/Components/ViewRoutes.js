@@ -1,9 +1,11 @@
-import CourseTable from "./TableCompontens";
+import { CourseTable, StudyplanTable } from "./TableCompontens";
 import Navbar from "./NavbarComponents";
 import LogInForm from "./LoginFormComponents";
 import { Container, Col } from "react-bootstrap";
 
 import "../App.css";
+import API from "../API";
+import { useEffect, useState } from "react";
 
 function DefaultRoute() {
   return (
@@ -26,11 +28,33 @@ function HomeRoute(props) {
 }
 
 function PersonalHomeRoute(props) {
+  const [studyplan, setStudyplan] = useState([]);
+
+  const getStudyplan = async () => {
+    const spcourses = await API.getStudyplan();
+    setStudyplan(spcourses);
+  };
+
+  useEffect(() => {
+    getStudyplan();
+  }, []);
+
+  const spcourses = props.courses.filter((course) =>
+    studyplan.includes(course.code)
+  );
+
   return (
     <>
       <Navbar searchBar logOutButton />
-      <Container className="tableContainer">
-        <CourseTable courses={props.courses} loggedIn />
+      <Container>
+        <h3>Courses</h3>
+        <Container className="tableContainer mb-5">
+          <CourseTable courses={props.courses} spcodes={studyplan} loggedIn />
+        </Container>
+        <h3>Study Plan</h3>
+        <Container className="tableContainer">
+          <StudyplanTable courses={spcourses} studyplan loggedIn />
+        </Container>
       </Container>
     </>
   );

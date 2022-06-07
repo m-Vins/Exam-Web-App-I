@@ -54,5 +54,17 @@ const getUserInfo = async () => {
   }
 };
 
-const API = { getAllCourses, logIn, getUserInfo };
+const getStudyplan = async () => {
+  const response = await fetch(SERVER_URL + "/api/studyplan", {
+    credentials: "include",
+  });
+  const courses = await response.json();
+  if (response.ok) {
+    return courses;
+  } else {
+    throw courses;
+  }
+};
+
+const API = { getAllCourses, logIn, getUserInfo, getStudyplan };
 export default API;
