@@ -3,7 +3,7 @@
 }
 
 .App-logo {
-  height: 40vmin;
+  height: 40vmi n;
   pointer-events: none;
 }
 
@@ -42,6 +42,10 @@
   overflow: scroll;
 }
 
+/* Table {
+  border: black !important;
+} */
+
 Table thead {
   background-color: rgb(171, 204, 212) !important;
   position: sticky;
@@ -54,4 +58,10 @@ Table thead {
 
 .navbar {
   background-color: rgb(171, 204, 212) !important;
+}
+
+:root {
+  --toastify-color-success: rgb(141, 194, 207) !important;
+  --toastify-color-error: rgb(207, 141, 141) !important;
+  --toastify-text-color-light: #2e2e2e !important;
 }
