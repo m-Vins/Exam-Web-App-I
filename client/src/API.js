@@ -22,5 +22,37 @@ const getAllCourses = async () => {
   else throw responseJson;
 };
 
-const API = { getAllCourses };
+const logIn = async (credentials) => {
+  const response = await fetch(SERVER_URL + "/api/sessions", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    credentials: "include",
+    body: JSON.stringify(credentials),
+  });
+  if (response.ok) {
+    const user = await response.json();
+    const student = new Student(user.id, user.username, user.studyplan);
+    return student;
+  } else {
+    const errDetails = await response.text();
+    throw errDetails;
+  }
+};
+
+const getUserInfo = async () => {
+  const response = await fetch(SERVER_URL + "/api/sessions/current", {
+    credentials: "include",
+  });
+  const user = await response.json();
+  const student = new Student(user.id, user.username, user.studyplan);
+  if (response.ok) {
+    return student;
+  } else {
+    throw user;
+  }
+};
+
+const API = { getAllCourses, logIn, getUserInfo };
 export default API;

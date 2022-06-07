@@ -16,11 +16,30 @@ import API from "./API";
 
 function App() {
   const [courses, setCourses] = useState([]);
+  const [loggedIn, setLoggedIn] = useState(false);
 
   const getCourses = async () => {
     const courses = await API.getAllCourses();
     setCourses(courses);
   };
+
+  const handleLogIn = async (username, password) => {
+    try {
+      const Student = await API.logIn({ username, password });
+      setLoggedIn(true);
+      //TODO insert pop up
+    } catch (err) {
+      //TODO pop up error
+    }
+  };
+
+  useEffect(() => {
+    const checkAuth = async () => {
+      await API.getUserInfo();
+      setLoggedIn(true);
+    }; //TODO insert a catch ?
+    checkAuth();
+  }, []);
 
   useEffect(() => {
     getCourses();
@@ -35,7 +54,10 @@ function App() {
             path="/student"
             element={<PersonalHomeRoute courses={courses} />}
           ></Route>
-          <Route path="/login" element={<LoginRoute />} />
+          <Route
+            path="/login"
+            element={<LoginRoute handleLogIn={handleLogIn} />}
+          />
           <Route path="*" element={<DefaultRoute />} />
         </Routes>
       </BrowserRouter>

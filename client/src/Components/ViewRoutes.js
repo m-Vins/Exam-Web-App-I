@@ -36,13 +36,13 @@ function PersonalHomeRoute(props) {
   );
 }
 
-function LoginRoute() {
+function LoginRoute(props) {
   return (
     <>
       <Navbar />
       <Container className="mt-5">
         <Col md={{ span: 4, offset: 4 }}>
-          <LogInForm />
+          <LogInForm handleLogIn={props.handleLogIn} />
         </Col>
       </Container>
     </>
