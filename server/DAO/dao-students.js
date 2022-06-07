@@ -108,13 +108,13 @@ exports.getStudent = (username, password) => {
       else if (row === undefined) resolve(false);
       else {
         const student = new Student(row.id, row.username, row.studyplan);
-
         crypto.scrypt(password, row.salt, 64, function (err, hashedPassword) {
+          //console.log(hashedPassword.toString("hex"));
           if (err) reject(err);
           if (
             crypto.timingSafeEqual(Buffer.from(row.hash, "hex"), hashedPassword)
           )
-            resolve(user);
+            resolve(student);
           else resolve(false);
         });
       }
