@@ -17,7 +17,7 @@ function NavbarComponent(props) {
         <Col className="d-flex justify-content-start">
           <Navbar.Brand href="#">University Courses</Navbar.Brand>
         </Col>
-        {props.searchBar && (
+        {/* {props.searchBar && (
           <Col>
             <Form className="d-flex">
               <FormControl
@@ -29,11 +29,22 @@ function NavbarComponent(props) {
               <Button variant="outline-primary">Search</Button>
             </Form>
           </Col>
-        )}
-        {(props.logInButton && (
-          <Col className="d-flex justify-content-end">
+        )} */}
+        <Col className="d-flex justify-content-end">
+          {props.studyplanButton && (
             <Button
-              className="ms-2 me-2"
+              className="me-2"
+              variant="outline-success"
+              onClick={(event) => {
+                event.preventDefault();
+              }}
+            >
+              //TODO add here something
+            </Button>
+          )}
+          {(props.logInButton && (
+            <Button
+              className="me-2"
               variant="outline-success"
               onClick={(event) => {
                 event.preventDefault();
@@ -42,12 +53,10 @@ function NavbarComponent(props) {
             >
               Login
             </Button>
-          </Col>
-        )) ||
-          (props.logOutButton && (
-            <Col className="d-flex justify-content-end">
+          )) ||
+            (props.logOutButton && (
               <Button
-                className="ms-2 me-2"
+                className="me-2"
                 variant="outline-danger"
                 onClick={(event) => {
                   event.preventDefault();
@@ -56,8 +65,8 @@ function NavbarComponent(props) {
               >
                 Logout
               </Button>
-            </Col>
-          ))}
+            ))}
+        </Col>
       </Container>
     </Navbar>
   );
