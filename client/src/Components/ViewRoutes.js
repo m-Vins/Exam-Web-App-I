@@ -1,4 +1,4 @@
-import { CourseTable, StudyplanTable } from "./TableCompontens";
+import { CourseTable } from "./TableCompontens";
 import Navbar from "./NavbarComponents";
 import LogInForm from "./LoginFormComponents";
 import { Container, Col } from "react-bootstrap";
@@ -31,8 +31,8 @@ function PersonalHomeRoute(props) {
   const [studyplan, setStudyplan] = useState([]);
 
   const getStudyplan = async () => {
-    const spcourses = await API.getStudyplan();
-    setStudyplan(spcourses);
+    const spcodes = await API.getStudyplan();
+    setStudyplan(spcodes);
   };
 
   const saveStudyplan = async () => {
@@ -43,10 +43,6 @@ function PersonalHomeRoute(props) {
   useEffect(() => {
     getStudyplan();
   }, []);
-
-  const spcourses = props.courses.filter((course) =>
-    studyplan.includes(course.code)
-  );
 
   const addCourseStudyplan = (courseCode) => {
     setStudyplan((sp) => [...sp, courseCode]);
@@ -63,21 +59,26 @@ function PersonalHomeRoute(props) {
         <h3>Courses</h3>
         <Container className="tableContainer mb-5">
           <CourseTable
+            loggedIn
             courses={props.courses}
             spcodes={studyplan}
-            loggedIn
             addCourseStudyplan={addCourseStudyplan}
           />
         </Container>
         <h3>Study Plan</h3>
-        <Container className="tableContainer">
-          <StudyplanTable
-            courses={spcourses}
-            studyplan
-            loggedIn
-            deleteCourseStudyplan={deleteCourseStudyplan}
-          />
-        </Container>
+        {studyplan.length > 0 ? (
+          <Container className="tableContainer">
+            <CourseTable
+              studyplan
+              loggedIn
+              courses={props.courses}
+              spcodes={studyplan}
+              deleteCourseStudyplan={deleteCourseStudyplan}
+            />
+          </Container>
+        ) : (
+          <></>
+        )}
       </Container>
     </>
   );

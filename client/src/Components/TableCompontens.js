@@ -14,13 +14,14 @@ function CourseRow(props) {
         <td>{props.maxStudentsNumber}</td>
         {props.loggedIn && (
           <RowActions
+            studyplan={props.studyplan} //true when called within studyplan table
+            courses={props.courses} //all courses
+            code={props.code} //code of this course
+            spcodes={props.spcodes} //studyplan courses codes
             incompatibleCourses={props.incompatibleCourses}
             preparatoryCourse={props.preparatoryCourse}
             deleteCourseStudyplan={props.deleteCourseStudyplan}
             addCourseStudyplan={props.addCourseStudyplan}
-            studyplan={props.studyplan}
-            spcodes={props.spcodes}
-            code={props.code}
             expanded={expanded}
             setExpanded={setExpanded}
           />
@@ -39,91 +40,90 @@ function CourseRow(props) {
 /**
  * @param props.studyplan just to know whether we are in the coursetable or studyplantable
  * @param props.spcodes array of the courses codes in the studyplan
+ * @param props.courses arra of all the courses
  * @param props.code code of the given course
- * @param props.preparatoryCourse preparatory course coude of the given course
- * @param props.incompatibleCourses array of incompatible courses codes of the given course
+ * @param props.preparatoryCourse
+ * @param props.incompatibleCourses
  * @param props.deleteCourseStudyplan
  * @param props.addCourseStudyplan
  * @param props.expanded
+ * @param props.setExpanded
  * @returns
  */
 function RowActions(props) {
   /**
-   * check if the course can be added to the studyplan
+   * check if the course can be added to or removed from the studyplan.
    *
-   * please note: _checkCourseToAdd is called only when props.spcodes is not falsy, this because
+   * please note: _checkCourseToAdd is called only when props.studyplan is false, this because
    * this function (RowActions) can be called both in CourseTable and StudyplanTable.
-   * In the latter case, there is no need to check if the exam can be added in the studyplan
+   * In the latter case, there is no need to check if the course can be added in the studyplan
    * because is already there, thus it is assigned [true, ""] to [ok, msg] which anyway in this case
    * wont be used.
+   * _checkCourseToRemove instead, is called only when props.studyplan in true, in order to check
+   * whether a course cannot be removed because it is preparatory for another one which is in the studyplan.
    */
-  const [ok, msg] = (props.spcodes &&
+  const [ok, msg] =
+    (props.studyplan &&
+      _checkCourseToRemove(props.code, props.courses, props.spcodes)) ||
     _checkCourseToAdd(
       props.code,
       props.preparatoryCourse,
       props.incompatibleCourses,
       props.spcodes
-    )) || [true, ""];
+    );
 
   return (
     <td>
       {
         /**
-         * The remove button is shown if we are in the studyplan table.
-         *
-         * please note : props.studyplan will let us know if we are either in the studyplan or in the course table !!
+         * can this course be removed from or added to the studyplan? well, let's choose the right button.
          */
-        (props.studyplan && (
-          <Button
-            size="sm"
-            variant="outline-danger"
-            className="ms-1"
-            onClick={(event) => {
-              event.preventDefault();
-              props.deleteCourseStudyplan(props.code);
-            }}
-          >
-            <i className="bi bi-x-lg"></i>
-          </Button>
-        )) || (
-          /**
-           * Here we are in the course table, thus based on the result of _checkCourseToAdd
-           * either the add button or the danger button with the tooltip is shown
-           */
-          <>
-            {ok ? (
-              /**
-               * can this course can be added to the studyplan? well, let's choose the right button
-               */
-              <Button
-                size="sm"
-                variant="outline-success"
-                className="ms-1"
-                onClick={(event) => {
-                  event.preventDefault();
-                  props.addCourseStudyplan(props.code);
-                }}
-              >
-                <i className="bi bi-plus"></i>
-              </Button>
-            ) : (
-              <CourseToolTip msg={msg} />
-            )}
+        ok ? (
+          props.studyplan ? (
+            /**
+             * please note : props.studyplan will let us know if we are either in the studyplan or in the course table !!
+             */
             <Button
               size="sm"
-              variant="outline-primary"
+              variant="danger"
               className="ms-1"
-              onClick={() => props.setExpanded((e) => !e)}
+              disabled={!ok}
+              onClick={(event) => {
+                event.preventDefault();
+                props.deleteCourseStudyplan(props.code);
+              }}
             >
-              <i
-                className={
-                  props.expanded ? "bi bi-caret-up" : "bi bi-caret-down"
-                }
-              ></i>
-            </Button>{" "}
-          </>
+              <i className="bi bi-x-lg"></i>
+            </Button>
+          ) : (
+            <Button
+              size="sm"
+              variant="success"
+              className="ms-1"
+              onClick={(event) => {
+                event.preventDefault();
+                props.addCourseStudyplan(props.code);
+              }}
+            >
+              <i className="bi bi-plus"></i>
+            </Button>
+          )
+        ) : (
+          <CourseToolTip msg={msg} />
         )
       }
+      {!props.studyplan && (
+        <Button
+          size="sm"
+          variant="primary"
+          className="ms-1"
+          onClick={() => props.setExpanded((e) => !e)}
+        >
+          <i
+            className={props.expanded ? "bi bi-caret-up" : "bi bi-caret-down"}
+          ></i>
+        </Button>
+      )}
     </td>
   );
 }
@@ -186,13 +186,19 @@ function ExpandedRow(props) {
 }
 
 /**
- * This component is used both in the logged-in and not logged-in pages.
+ * This component is used both in the logged-in and not logged-in pages
+ * and both for all courses table and study plan table.
  *
- * For this reason @param props.loggedIn is needed to let us know whether it is
- * needed to shown the actions column.
+ * For this reason
+ * @param props.loggedIn is needed to let us know whether it is needed to shown the actions column, while
+ * @param props.studyplan is true when it is called to render the studyplan table
  *
  */
 function CourseTable(props) {
+  const coursesToShow = props.studyplan
+    ? props.courses.filter((course) => props.spcodes.includes(course.code))
+    : props.courses;
+
   return (
     <Table scrolly="true" size={props.loggedIn && "sm"} striped bordered hover>
       <thead>
@@ -202,16 +208,22 @@ function CourseTable(props) {
           <th>credits</th>
           <th>current students number</th>
           <th>max students number</th>
-          {props.loggedIn && <th></th>}
+          {
+            /**
+             * Add another row for the action when logged in
+             */
+            props.loggedIn && <th></th>
+          }
         </tr>
       </thead>
 
       <tbody>
-        {props.courses.map((course) => {
+        {coursesToShow.map((course) => {
           return (
             <CourseRow
-              addCourseStudyplan={props.addCourseStudyplan}
-              spcodes={props.spcodes}
+              studyplan={props.studyplan} //true when in studyplan table
+              courses={props.courses} //all courses
+              spcodes={props.spcodes} //StudyPlan courses codes
               loggedIn={props.loggedIn}
               key={course.code}
               code={course.code}
@@ -221,43 +233,8 @@ function CourseTable(props) {
               maxStudentsNumber={course.maxStudentsNumber}
               incompatibleCourses={course.incompatibleCourses}
               currentStudentsNumber={course.currentStudentsNumber}
-            />
-          );
-        })}
-      </tbody>
-    </Table>
-  );
-}
-
-function StudyplanTable(props) {
-  return (
-    <Table scrolly="true" size={props.loggedIn && "sm"} striped bordered hover>
-      <thead>
-        <tr>
-          <th>code</th>
-          <th>name</th>
-          <th>credits</th>
-          <th>current students number</th>
-          <th>max students number</th>
-          {props.loggedIn && <th></th>}
-        </tr>
-      </thead>
-
-      <tbody>
-        {props.courses.map((course) => {
-          return (
-            <CourseRow
-              studyplan
               deleteCourseStudyplan={props.deleteCourseStudyplan}
-              loggedIn={props.loggedIn}
-              key={course.code}
-              code={course.code}
-              name={course.name}
-              credits={course.credits}
-              preparatoryCourse={course.preparatoryCourse}
-              maxStudentsNumber={course.maxStudentsNumber}
-              incompatibleCourses={course.incompatibleCourses}
-              currentStudentsNumber={course.currentStudentsNumber}
+              addCourseStudyplan={props.addCourseStudyplan}
             />
           );
         })}
@@ -276,13 +253,13 @@ function StudyplanTable(props) {
  * @returns an array of two variables : [error, message] where error is false when the course cannot be inserted in the studyplan and the relative message
  */
 function _checkCourseToAdd(
-  coursecode,
+  courseCode,
   preparatoryCourse,
   incompatibleCourses,
   spcodes
 ) {
   /**
-   * SPincompatibleCourses : array of the courses codes incompatible with the given coursecode
+   * SPincompatibleCourses : array of the courses codes incompatible with the given courseCode
    * which are already in the spcodes array
    */
   const SPincompatibleCourses = [];
@@ -291,7 +268,7 @@ function _checkCourseToAdd(
   /**
    * if the course is already present in the studyplan it cannot be inserted again
    */
-  if (spcodes.includes(coursecode))
+  if (spcodes.includes(courseCode))
     return [false, "course already present in studyplan"];
 
   /**
@@ -327,4 +304,23 @@ function _checkCourseToAdd(
   return [!msg.length > 0, msg];
 }
 
-export { CourseTable, StudyplanTable };
+/**
+ * This function check whether an course in the studyplan
+ * is the preparatory course of another course in the studyplan.
+ *
+ * @param courseCode is the code of the given course
+ * @param courses is the array of all the courses
+ * @param spcodes is the array of the courses codes within the studyplan
+ * @returns [true,""] if the course can be removed, [false, explanation message] if the course cannot be removed.
+ */
+function _checkCourseToRemove(courseCode, courses, spcodes) {
+  const course = spcodes
+    .map((code) => courses.filter((course) => course.code === code)[0])
+    .filter((course) => course.preparatoryCourse === courseCode)[0];
+
+  return course
+    ? [false, "this course is the preparatory course for : " + course.code]
+    : [true, ""];
+}
+
+export { CourseTable };
