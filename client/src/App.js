@@ -17,6 +17,7 @@ import {
 import API from "./API";
 
 function App() {
+  const [user, setUser] = useState(undefined);
   const [courses, setCourses] = useState([]);
   const [loggedIn, setLoggedIn] = useState(false);
 
@@ -27,9 +28,10 @@ function App() {
 
   const handleLogIn = async (username, password) => {
     try {
-      const Student = await API.logIn({ username, password });
+      const student = await API.logIn({ username, password });
       setLoggedIn(true);
-      toast.success("Successfully logged in !", {
+      setUser(student);
+      toast.success(`Welcome ${student.username} !`, {
         position: toast.POSITION.TOP_CENTER,
       });
     } catch (err) {
@@ -40,15 +42,26 @@ function App() {
   };
 
   const handleLogOut = async (credentials) => {
-    await API.logOut();
-    setLoggedIn(false);
+    try {
+      await API.logOut();
+      setLoggedIn(false);
+      setUser(undefined);
+      toast.success(`Succesfully logged out!`, {
+        position: toast.POSITION.TOP_CENTER,
+      });
+    } catch (e) {
+      toast.error("Server Error !", {
+        position: toast.POSITION.TOP_CENTER,
+      });
+    }
   };
 
   useEffect(() => {
     const checkAuth = async () => {
       try {
-        await API.getUserInfo();
+        const student = await API.getUserInfo();
         setLoggedIn(true);
+        setUser(student);
       } catch (e) {
         setLoggedIn(false);
       }
@@ -70,6 +83,7 @@ function App() {
             element={
               loggedIn ? (
                 <PersonalHomeRoute
+                  user={user}
                   courses={courses}
                   handleLogOut={handleLogOut}
                 />
