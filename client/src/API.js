@@ -3,6 +3,8 @@ import Student from "./Classes/Student";
 
 const SERVER_URL = "http://localhost:3001";
 
+//TODO fix error messages
+
 const getAllCourses = async () => {
   const response = await fetch(SERVER_URL + "/api/courses");
   const responseJson = await response.json();
@@ -88,6 +90,15 @@ const saveStudyplan = async (courses) => {
   const responseJson = await response.json();
   if (response.ok) return responseJson;
   else throw responseJson.body;
+};
+
+const deleteStudyPlan = async () => {
+  const response = await fetch(SERVER_URL + "/api/studyplan", {
+    method: "DELETE",
+    credentials: "include",
+  });
+
+  if (!response.ok) alert("something went wrong!");
 };
 
 const API = {

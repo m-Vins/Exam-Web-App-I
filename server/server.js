@@ -89,6 +89,13 @@ app.post("/api/studyplan", (req, res) => {
     );
 });
 
+app.delete("./api/studyplan", (req, res) => {
+  services
+    .deleteStudyPlan(req.user.id)
+    .thend(() => res.status(204).end())
+    .catch(res.status(500).json(err));
+});
+
 app.post("/api/sessions", passport.authenticate("local"), (req, res) => {
   console.log(req.user);
   res.status(201).json(req.user);
@@ -98,6 +105,10 @@ app.delete("/api/sessions/current", (req, res) => {
   req.logout(() => {
     res.end();
   });
+
+  // req.logout(() => {
+  //   new Promise(() => setTimeout(() => res.end(), 3000));
+  // });
 });
 
 app.get("/api/sessions/current", (req, res) => {
