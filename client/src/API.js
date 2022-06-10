@@ -78,21 +78,22 @@ const getStudyplan = async () => {
   }
 };
 
-const saveStudyplan = async (courses) => {
+const saveStudyplan = async (studyplanOption, courses) => {
   const response = await fetch(SERVER_URL + "/api/studyplan", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
     },
     credentials: "include",
-    body: JSON.stringify(courses),
+    body: JSON.stringify({ studyplan: studyplanOption, courses: courses }),
   });
+
+  if (response.ok) return;
   const responseJson = await response.json();
-  if (response.ok) return responseJson;
-  else throw responseJson.body;
+  throw responseJson.body;
 };
 
-const deleteStudyPlan = async () => {
+const deleteStudyplan = async () => {
   const response = await fetch(SERVER_URL + "/api/studyplan", {
     method: "DELETE",
     credentials: "include",
@@ -108,5 +109,6 @@ const API = {
   getUserInfo,
   getStudyplan,
   saveStudyplan,
+  deleteStudyplan,
 };
 export default API;
