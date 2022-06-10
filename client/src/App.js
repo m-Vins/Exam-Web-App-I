@@ -40,7 +40,7 @@ function App() {
             return `Welcome ${data} !`;
           },
         },
-        error: "Server Error !",
+        error: "Wrong Credentials !",
       },
       { position: toast.POSITION.TOP_CENTER }
     );
@@ -90,6 +90,7 @@ function App() {
                 <PersonalHomeRoute
                   user={user}
                   courses={courses}
+                  getCourses={getCourses}
                   handleLogOut={handleLogOut}
                 />
               ) : (
