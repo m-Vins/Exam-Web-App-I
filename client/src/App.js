@@ -27,33 +27,38 @@ function App() {
   };
 
   const handleLogIn = async (username, password) => {
-    try {
-      const student = await API.logIn({ username, password });
-      setLoggedIn(true);
-      setUser(student);
-      toast.success(`Welcome ${student.username} !`, {
-        position: toast.POSITION.TOP_CENTER,
-      });
-    } catch (err) {
-      toast.error("Wrong credentials !", {
-        position: toast.POSITION.TOP_CENTER,
-      });
-    }
+    toast.promise(
+      API.logIn({ username, password }).then((student) => {
+        setLoggedIn(true);
+        setUser(student);
+        return student.username;
+      }),
+      {
+        pending: "logging in",
+        success: {
+          render({ data }) {
+            return `Welcome ${data} !`;
+          },
+        },
+        error: "Server Error !",
+      },
+      { position: toast.POSITION.TOP_CENTER }
+    );
   };
 
   const handleLogOut = async (credentials) => {
-    try {
-      await API.logOut();
-      setLoggedIn(false);
-      setUser(undefined);
-      toast.success(`Succesfully logged out!`, {
-        position: toast.POSITION.TOP_CENTER,
-      });
-    } catch (e) {
-      toast.error("Server Error !", {
-        position: toast.POSITION.TOP_CENTER,
-      });
-    }
+    toast.promise(
+      API.logOut().then(() => {
+        setLoggedIn(false);
+        setUser(undefined);
+      }),
+      {
+        pending: "Logging out",
+        success: "Succesfully logged out",
+        error: "Server Error !",
+      },
+      { position: toast.POSITION.TOP_CENTER }
+    );
   };
 
   useEffect(() => {
@@ -75,7 +80,7 @@ function App() {
 
   return (
     <Container fluid>
-      <ToastContainer transition={Bounce} />
+      <ToastContainer transition={Bounce} autoClose={1500} />
       <BrowserRouter>
         <Routes>
           <Route
