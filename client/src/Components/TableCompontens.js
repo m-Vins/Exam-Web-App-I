@@ -12,8 +12,9 @@ function CourseRow(props) {
         <td>{props.credits}</td>
         <td>{props.currentStudentsNumber}</td>
         <td>{props.maxStudentsNumber}</td>
-        {props.loggedIn && (
+        {props.loggedIn && (props.edit || !props.studyplan) && (
           <RowActions
+            edit={props.edit} //true when in editing mode
             studyplan={props.studyplan} //true when called within studyplan table
             courses={props.courses} //all courses
             code={props.code} //code of this course
@@ -62,23 +63,23 @@ function RowActions(props) {
    * _checkCourseToRemove instead, is called only when props.studyplan in true, in order to check
    * whether a course cannot be removed because it is preparatory for another one which is in the studyplan.
    */
-  const [ok, msg] =
-    (props.studyplan &&
-      _checkCourseToRemove(props.code, props.courses, props.spcodes)) ||
+  const [ok, msg] = (props.studyplan &&
+    props.edit &&
+    _checkCourseToRemove(props.code, props.courses, props.spcodes)) ||
     _checkCourseToAdd(
       props.code,
       props.preparatoryCourse,
       props.incompatibleCourses,
       props.spcodes
-    );
+    ) || [undefined, undefined];
 
   return (
     <td>
-      {
+      {props.edit &&
         /**
          * can this course be removed from or added to the studyplan? well, let's choose the right button.
          */
-        ok ? (
+        (ok ? (
           props.studyplan ? (
             /**
              * please note : props.studyplan will let us know if we are either in the studyplan or in the course table !!
@@ -110,8 +111,7 @@ function RowActions(props) {
           )
         ) : (
           <CourseToolTip msg={msg} />
-        )
-      }
+        ))}
       {!props.studyplan && (
         <Button
           size="sm"
@@ -212,7 +212,7 @@ function CourseTable(props) {
             /**
              * Add another row for the action when logged in
              */
-            props.loggedIn && <th></th>
+            props.loggedIn && (props.edit || !props.studyplan) && <th></th>
           }
         </tr>
       </thead>
@@ -221,6 +221,7 @@ function CourseTable(props) {
         {coursesToShow.map((course) => {
           return (
             <CourseRow
+              edit={props.edit}
               studyplan={props.studyplan} //true when in studyplan table
               courses={props.courses} //all courses
               spcodes={props.spcodes} //StudyPlan courses codes
