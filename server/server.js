@@ -78,7 +78,7 @@ app.get("/api/studyplan", isLoggedIn, (req, res) => {
     .catch((err) => res.status(500).json(err));
 });
 
-app.post("/api/studyplan", (req, res) => {
+app.post("/api/studyplan", isLoggedIn, (req, res) => {
   services
     .addStudyPlan(req.user.id, req.body.studyplan, req.body.courses)
     .then(() => res.status(200).end())
@@ -89,15 +89,15 @@ app.post("/api/studyplan", (req, res) => {
     );
 });
 
-app.delete("./api/studyplan", (req, res) => {
+app.delete("/api/studyplan", isLoggedIn, (req, res) => {
   services
     .deleteStudyPlan(req.user.id)
-    .thend(() => res.status(204).end())
-    .catch(res.status(500).json(err));
+    .then(() => res.status(204).end())
+    .catch((err) => res.status(500).json(err));
 });
 
 app.post("/api/sessions", passport.authenticate("local"), (req, res) => {
-  console.log(req.user);
+  // new Promise(() => setTimeout(() => res.status(201).json(req.user), 3000));
   res.status(201).json(req.user);
 });
 
