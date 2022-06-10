@@ -8,22 +8,28 @@ import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 
 function StudyPlanTitle(props) {
+  const max = { "part-time": 30, "full-time": 60 }[props.studyplanOption];
+  const min = { "part-time": 10, "full-time": 10 }[props.studyplanOption];
   const credits = props.courses
     .filter((course) => props.spcodes.includes(course.code))
     .map((course) => course.credits)
     .reduce((accumulator, curr) => accumulator + curr, 0);
+
   return (
     <Container>
       <Row>
         <Col>
           <h3>Study Plan : {props.studyplanOption}</h3>
         </Col>
-        <Col>
-          <h3>Current credits : {credits}</h3>
-        </Col>
       </Row>
-      <Row>
-        <ProgressBar now={60} />
+      <Row className="ms-1 me-1 mt-1 mb-1">
+        <ProgressBar
+          now={credits}
+          max={max}
+          label={"current credits :" + credits}
+          striped
+          variant={credits > min ? "success" : "danger"}
+        />
       </Row>
     </Container>
   );
