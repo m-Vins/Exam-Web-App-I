@@ -42,12 +42,8 @@
   overflow: scroll;
 }
 
-/* Table {
-  border: black !important;
-} */
-
 Table thead {
-  background-color: rgb(171, 204, 212) !important;
+  background-color: var(--appcolor) !important;
   position: sticky;
   top: 0px;
 }
@@ -57,11 +53,17 @@ Table thead {
 }
 
 .navbar {
-  background-color: rgb(171, 204, 212) !important;
+  background-color: var(--appcolor) !important;
 }
 
 :root {
-  --toastify-color-success: rgb(141, 194, 207) !important;
+  --appcolor: rgb(185, 214, 206);
+  --toastify-color-success: var(--appcolor) !important;
   --toastify-color-error: rgb(207, 141, 141) !important;
   --toastify-text-color-light: #2e2e2e !important;
+}
+
+.progress {
+  padding-left: 0;
+  padding-right: 0px;
 }
