@@ -19,6 +19,8 @@ function CourseRow(props) {
             courses={props.courses} //all courses
             code={props.code} //code of this course
             spcodes={props.spcodes} //studyplan courses codes
+            currentStudentsNumber={props.currentStudentsNumber}
+            maxStudentsNumber={props.maxStudentsNumber}
             incompatibleCourses={props.incompatibleCourses}
             preparatoryCourse={props.preparatoryCourse}
             deleteCourseStudyplan={props.deleteCourseStudyplan}
@@ -70,7 +72,9 @@ function RowActions(props) {
       props.code,
       props.preparatoryCourse,
       props.incompatibleCourses,
-      props.spcodes
+      props.spcodes,
+      props.maxStudentsNumber,
+      props.currentStudentsNumber
     ) || [undefined, undefined];
 
   return (
@@ -257,7 +261,9 @@ function _checkCourseToAdd(
   courseCode,
   preparatoryCourse,
   incompatibleCourses,
-  spcodes
+  spcodes,
+  maxStudentsNumber,
+  currentStudentsNumber
 ) {
   /**
    * SPincompatibleCourses : array of the courses codes incompatible with the given courseCode
@@ -299,8 +305,14 @@ function _checkCourseToAdd(
    */
   if (preparatoryCourse && !spcodes.includes(preparatoryCourse))
     if (preparatoryCourse !== "") {
-      msg += "Missing preparatory course : " + preparatoryCourse;
+      msg += "Missing preparatory course : " + preparatoryCourse + "\n";
     }
+
+  //FIXME : if the course is in the persistent studyplan, and during the edit the student
+  //remove the course while the capacity of the course is full, then the current
+  //student number is not updated and the student cannot insert the course anymore
+  if (maxStudentsNumber && currentStudentsNumber + 1 > maxStudentsNumber)
+    msg += "The course capacity is full";
 
   return [!msg.length > 0, msg];
 }
