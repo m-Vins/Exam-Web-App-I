@@ -75,11 +75,18 @@ function PersonalHome(props) {
         .then(() => {
           setEdit(false);
           getStudyplan();
+        })
+        .catch((err) => {
+          throw err.message;
         }),
       {
         pending: "Saving Study Plan",
         success: "Study Plan saved !",
-        error: "Server Error !",
+        error: {
+          render({ data }) {
+            return `Error : ${data} !`;
+          },
+        },
       },
       { position: toast.POSITION.TOP_CENTER }
     );
@@ -109,7 +116,7 @@ function PersonalHome(props) {
   };
 
   const deleteCourseStudyplan = (courseCode) => {
-    setStudyplan((sp) => sp.filter((c) => c != courseCode));
+    setStudyplan((sp) => sp.filter((c) => c !== courseCode));
   };
 
   return (
