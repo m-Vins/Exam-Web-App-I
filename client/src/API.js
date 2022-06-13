@@ -90,7 +90,7 @@ const saveStudyplan = async (studyplanOption, courses) => {
 
   if (response.ok) return;
   const responseJson = await response.json();
-  throw responseJson.body;
+  throw responseJson;
 };
 
 const deleteStudyplan = async () => {
