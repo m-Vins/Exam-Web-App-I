@@ -311,8 +311,8 @@ function _checkCourseToAdd(
   //FIXME : if the course is in the persistent studyplan, and during the edit the student
   //remove the course while the capacity of the course is full, then the current
   //student number is not updated and the student cannot insert the course anymore
-  if (maxStudentsNumber && currentStudentsNumber + 1 > maxStudentsNumber)
-    msg += "The course capacity is full";
+  // if (maxStudentsNumber && currentStudentsNumber + 1 > maxStudentsNumber)
+  //   msg += "The course capacity is full";
 
   return [!msg.length > 0, msg];
 }
