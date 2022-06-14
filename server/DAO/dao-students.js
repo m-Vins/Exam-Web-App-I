@@ -6,25 +6,7 @@ const { Student } = require("../Classes/Student");
 const crypto = require("crypto");
 
 /*
- * List all the students within the database
- */
-exports.listStudents = () => {
-  return new Promise((resolve, reject) => {
-    const sql = "SELECT * FROM students";
-    db.all(sql, [], (err, rows) => {
-      if (err) reject(err);
-      else {
-        const student = rows.map(
-          (row) => new Student(row.id, row.username, row.studyplan)
-        );
-        resolve(student);
-      }
-    });
-  });
-};
-
-/*
- * return the course codes of the exams within the studyplan
+ * return the course codes of the courses within the studyplan
  * of the given student
  */
 exports.getStudyPlan = (studentID) => {
@@ -121,25 +103,3 @@ exports.getStudent = (username, password) => {
     });
   });
 };
-
-/*
-exports.studyPlanAddExam = (studentID, courseID) => {
-  return new Promise((resolve, reject) => {
-    const SQL = "INSERT INTO studyPlans(studentID,courseID) VALUES(?,?)";
-    db.run(SQL, [studentID, courseID], function (err) {
-      if (err) reject(err);
-      else resolve(this.lastID);
-    });
-  });
-};
-
-exports.studyPlanDeleteExam = (studentID, courseID) => {
-  return new Promise((resolve, reject) => {
-    const SQL = "DELETE FROM studyPlans WHERE studentID=? AND courseID=?";
-    db.run(SQL, [studentID, courseID], function (err) {
-      if (err) reject(err);
-      else resolve(this.lastID);
-    });
-  });
-};
-*/
