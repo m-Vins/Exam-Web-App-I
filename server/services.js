@@ -12,6 +12,7 @@ const limits = {
 function Services() {
   this.getStudent = (username, password) =>
     daoStudent.getStudent(username, password);
+
   this.listCourses = () =>
     daoCourses.listCourses().then((courses) =>
       Promise.all(
@@ -30,10 +31,13 @@ function Services() {
       )
     );
 
-  this.getIncompatibleCourses = (code) =>
-    daoCourses.getIncompatibleCourses(code);
+  this.getStudyPlanCourse = (studentID, courseID) =>
+    daoStudent
+      .getStudyPlan(studentID)
+      .then((courses) => courses.filter((codes) => codes === courseID)[0]);
 
-  this.listStudents = () => daoStudent.listStudents();
+  // this.getIncompatibleCourses = (code) =>
+  //   daoCourses.getIncompatibleCourses(code);
 
   this.getStudyPlan = (studentID) => daoStudent.getStudyPlan(studentID);
 
