@@ -102,6 +102,16 @@ const deleteStudyplan = async () => {
   if (!response.ok) alert("something went wrong!");
 };
 
+const getStudyplanCourse = async (courseID) => {
+  const response = await fetch(SERVER_URL + `/api/studyplan/${courseID}`, {
+    credentials: "include",
+  });
+
+  if (response.ok) return true;
+  if (response.status === 404) return false;
+  throw response.status;
+};
+
 const API = {
   getAllCourses,
   logIn,
@@ -110,5 +120,6 @@ const API = {
   getStudyplan,
   saveStudyplan,
   deleteStudyplan,
+  getStudyplanCourse,
 };
 export default API;

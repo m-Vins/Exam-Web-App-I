@@ -67,10 +67,7 @@ app.get("/api/courses", (req, res) => {
 app.get("/api/studyplan/:courseID", isLoggedIn, (req, res) => {
   services
     .getStudyPlanCourse(req.user.id, req.params.courseID)
-    .then((course) => {
-      console.log(course);
-      course ? res.status(200).end() : res.status(404).end();
-    })
+    .then((course) => (course ? res.status(200).end() : res.status(404).end()))
     .catch((err) => res.status(500).json(err));
 });
 

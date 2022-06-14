@@ -1,6 +1,7 @@
 import "bootstrap-icons/font/bootstrap-icons.css";
 import { useState } from "react";
 import { Table, Button, Tooltip, OverlayTrigger } from "react-bootstrap";
+import API from "../API";
 
 function CourseRow(props) {
   const [expanded, setExpanded] = useState(false);
@@ -308,11 +309,25 @@ function _checkCourseToAdd(
       msg += "Missing preparatory course : " + preparatoryCourse + "\n";
     }
 
-  //FIXME : if the course is in the persistent studyplan, and during the edit the student
-  //remove the course while the capacity of the course is full, then the current
-  //student number is not updated and the student cannot insert the course anymore
-  // if (maxStudentsNumber && currentStudentsNumber + 1 > maxStudentsNumber)
-  //   msg += "The course capacity is full";
+  /**
+   * in case the current student number + 1 is greater than the max students
+   * number (if any) , a quick check if the course is already in the studyplan
+   * of the student.
+   * It is needed because in case the student already had this course, and delete it
+   * temporarly from the studyplan, then during the same editing session it cannot re-insert
+   * this course because the current student number is updated only when the studyplan is saved.
+   *
+   */
+  const isPresent = async () => {
+    return await API.getStudyplanCourse(courseCode);
+  };
+
+  if (
+    maxStudentsNumber &&
+    currentStudentsNumber + 1 > maxStudentsNumber &&
+    !isPresent()
+  )
+    msg += "The course capacity is full";
 
   return [!msg.length > 0, msg];
 }
