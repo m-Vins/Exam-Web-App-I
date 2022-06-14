@@ -64,10 +64,13 @@ app.get("/api/courses", (req, res) => {
     .catch((err) => res.status(500).json(err));
 });
 
-app.get("/api/students", (req, res) => {
+app.get("/api/studyplan/:courseID", isLoggedIn, (req, res) => {
   services
-    .listStudents()
-    .then((courses) => res.status(200).json(courses))
+    .getStudyPlanCourse(req.user.id, req.params.courseID)
+    .then((course) => {
+      console.log(course);
+      course ? res.status(200).end() : res.status(404).end();
+    })
     .catch((err) => res.status(500).json(err));
 });
 
