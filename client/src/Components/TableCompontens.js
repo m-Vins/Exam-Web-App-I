@@ -13,23 +13,22 @@ function CourseRow(props) {
         <td>{props.credits}</td>
         <td>{props.currentStudentsNumber}</td>
         <td>{props.maxStudentsNumber}</td>
-        {props.loggedIn && (props.edit || !props.studyplan) && (
-          <RowActions
-            edit={props.edit} //true when in editing mode
-            studyplan={props.studyplan} //true when called within studyplan table
-            courses={props.courses} //all courses
-            code={props.code} //code of this course
-            spcodes={props.spcodes} //studyplan courses codes
-            currentStudentsNumber={props.currentStudentsNumber}
-            maxStudentsNumber={props.maxStudentsNumber}
-            incompatibleCourses={props.incompatibleCourses}
-            preparatoryCourse={props.preparatoryCourse}
-            deleteCourseStudyplan={props.deleteCourseStudyplan}
-            addCourseStudyplan={props.addCourseStudyplan}
-            expanded={expanded}
-            setExpanded={setExpanded}
-          />
-        )}
+        <RowActions
+          edit={props.edit} //true when in editing mode
+          studyplan={props.studyplan} //true when called within studyplan table
+          courses={props.courses} //all courses
+          code={props.code} //code of this course
+          spcodes={props.spcodes} //studyplan courses codes
+          wasIncluded={props.wasIncluded}
+          currentStudentsNumber={props.currentStudentsNumber}
+          maxStudentsNumber={props.maxStudentsNumber}
+          incompatibleCourses={props.incompatibleCourses}
+          preparatoryCourse={props.preparatoryCourse}
+          deleteCourseStudyplan={props.deleteCourseStudyplan}
+          addCourseStudyplan={props.addCourseStudyplan}
+          expanded={expanded}
+          setExpanded={setExpanded}
+        />
       </tr>
       {expanded && (
         <ExpandedRow
@@ -66,17 +65,18 @@ function RowActions(props) {
    * _checkCourseToRemove instead, is called only when props.studyplan in true, in order to check
    * whether a course cannot be removed because it is preparatory for another one which is in the studyplan.
    */
-  const [ok, msg] = (props.studyplan &&
-    props.edit &&
-    _checkCourseToRemove(props.code, props.courses, props.spcodes)) ||
-    _checkCourseToAdd(
-      props.code,
-      props.preparatoryCourse,
-      props.incompatibleCourses,
-      props.spcodes,
-      props.maxStudentsNumber,
-      props.currentStudentsNumber
-    ) || [undefined, undefined];
+  const [ok, msg] = (props.edit &&
+    (props.studyplan
+      ? _checkCourseToRemove(props.code, props.courses, props.spcodes)
+      : _checkCourseToAdd(
+          props.code,
+          props.preparatoryCourse,
+          props.incompatibleCourses,
+          props.spcodes,
+          props.maxStudentsNumber,
+          props.currentStudentsNumber,
+          props.wasIncluded
+        ))) || [undefined, undefined];
 
   return (
     <td>
@@ -180,9 +180,9 @@ function ExpandedRow(props) {
             /**
              * display preparatory courses if present
              */
-            (props.preparatoryCourse && <li>{props.preparatoryCourse}</li>) || (
-              <li>This course has not any preparatory course</li>
-            )
+            (props.preparatoryCourse && (
+              <li>Preparatory course : {props.preparatoryCourse}</li>
+            )) || <li>This course has not any preparatory course</li>
           }
         </ul>
       </td>
@@ -200,9 +200,11 @@ function ExpandedRow(props) {
  *
  */
 function CourseTable(props) {
-  const coursesToShow = props.studyplan
-    ? props.courses.filter((course) => props.spcodes.includes(course.code))
-    : props.courses;
+  const coursesToShow = (
+    props.studyplan
+      ? props.courses.filter((course) => props.spcodes.includes(course.code))
+      : props.courses
+  ).sort((a, b) => a.name.localeCompare(b.name));
 
   return (
     <Table scrolly="true" size={props.loggedIn && "sm"} striped bordered hover>
@@ -213,12 +215,7 @@ function CourseTable(props) {
           <th>credits</th>
           <th>current students number</th>
           <th>max students number</th>
-          {
-            /**
-             * Add another row for the action when logged in
-             */
-            props.loggedIn && (props.edit || !props.studyplan) && <th></th>
-          }
+          <th></th>
         </tr>
       </thead>
 
@@ -230,6 +227,9 @@ function CourseTable(props) {
               studyplan={props.studyplan} //true when in studyplan table
               courses={props.courses} //all courses
               spcodes={props.spcodes} //StudyPlan courses codes
+              wasIncluded={
+                props.oldspcodes && props.oldspcodes.includes(course.code)
+              }
               loggedIn={props.loggedIn}
               key={course.code}
               code={course.code}
@@ -264,7 +264,8 @@ function _checkCourseToAdd(
   incompatibleCourses,
   spcodes,
   maxStudentsNumber,
-  currentStudentsNumber
+  currentStudentsNumber,
+  present
 ) {
   /**
    * SPincompatibleCourses : array of the courses codes incompatible with the given courseCode
@@ -318,14 +319,11 @@ function _checkCourseToAdd(
    * this course because the current student number is updated only when the studyplan is saved.
    *
    */
-  const isPresent = async () => {
-    return await API.getStudyplanCourse(courseCode);
-  };
 
   if (
     maxStudentsNumber &&
     currentStudentsNumber + 1 > maxStudentsNumber &&
-    !isPresent()
+    !present
   )
     msg += "The course capacity is full";
 

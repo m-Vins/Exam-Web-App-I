@@ -8,8 +8,8 @@ import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 
 function StudyPlanTitle(props) {
-  const max = { "part-time": 30, "full-time": 60 }[props.studyplanOption];
-  const min = { "part-time": 10, "full-time": 10 }[props.studyplanOption];
+  const max = { "part-time": 40, "full-time": 80 }[props.studyplanOption];
+  const min = { "part-time": 20, "full-time": 60 }[props.studyplanOption];
   const credits = props.courses
     .filter((course) => props.spcodes.includes(course.code))
     .map((course) => course.credits)
@@ -20,6 +20,11 @@ function StudyPlanTitle(props) {
       <Row>
         <Col>
           <h3>Study Plan : {props.studyplanOption}</h3>
+        </Col>
+        <Col md={{ span: 4, offset: 1 }}>
+          <h4>
+            {min} &ge; credits number &ge; {max}
+          </h4>
         </Col>
       </Row>
       <Row className="ms-1 me-1 mt-1 mb-1">
@@ -37,12 +42,14 @@ function StudyPlanTitle(props) {
 
 function PersonalHome(props) {
   const [studyplanOption, setStudyplanOption] = useState(props.user.studyplan);
+  const [oldStudyplan, setOldStudyplan] = useState([]);
   const [studyplan, setStudyplan] = useState([]);
   const [edit, setEdit] = useState(false);
 
   const getStudyplan = async () => {
     const spcodes = await API.getStudyplan();
     setStudyplan(spcodes);
+    setOldStudyplan(spcodes);
   };
 
   const deleteStudyplan = () => {
@@ -51,6 +58,7 @@ function PersonalHome(props) {
         .then(() => props.getCourses())
         .then(() => {
           setStudyplan([]);
+          setOldStudyplan([]);
           setStudyplanOption(undefined);
         }),
       {
@@ -64,7 +72,7 @@ function PersonalHome(props) {
 
   const createStudyplan = (spOption) => {
     if (!["part-time", "full-time", undefined].includes(spOption))
-      throw "wrong studyplan option !";
+      throw new Error("wrong studyplan option !");
     setStudyplanOption(spOption);
   };
 
@@ -92,19 +100,23 @@ function PersonalHome(props) {
     );
   };
 
-  const resetStudyplan = async () => {
-    toast.promise(
-      getStudyplan().then(() => {
-        setStudyplanOption(props.user.studyplan);
-        setEdit(false);
-      }),
-      {
-        pending: "Resetting Study Plan",
-        success: "Study Plan resetted",
-        error: "Server Error !",
-      },
-      { position: toast.POSITION.TOP_CENTER }
-    );
+  // const resetStudyplan = async () => {
+  //   toast.promise(
+  //     getStudyplan().then(() => {
+  //       setStudyplanOption(props.user.studyplan);
+  //       setEdit(false);
+  //     }),
+  //     {
+  //       pending: "Resetting Study Plan",
+  //       success: "Study Plan resetted",
+  //       error: "Server Error !",
+  //     },
+  //     { position: toast.POSITION.TOP_CENTER }
+  //   );
+  // };
+
+  const resetStudyplan = () => {
+    setStudyplan([...oldStudyplan]);
   };
 
   useEffect(() => {
@@ -137,6 +149,7 @@ function PersonalHome(props) {
       <Container>
         <h3>Courses</h3>
         <Container
+          //TODO can props.user be removed here?
           className={props.user && studyplanOption ? "tableContainer mb-2" : ""}
         >
           <CourseTable
@@ -144,6 +157,7 @@ function PersonalHome(props) {
             edit={edit}
             courses={props.courses}
             spcodes={studyplan}
+            oldspcodes={oldStudyplan}
             addCourseStudyplan={addCourseStudyplan}
           />
         </Container>
