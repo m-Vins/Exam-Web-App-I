@@ -5,8 +5,8 @@ const daoStudent = require("./DAO/dao-students");
 
 // TODO remind to fix them
 const limits = {
-  "full-time": { min: 0, max: 80 },
-  "part-time": { min: 0, max: 40 },
+  "full-time": { min: 60, max: 80 },
+  "part-time": { min: 20, max: 40 },
 };
 
 function Services() {

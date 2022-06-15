@@ -1,29 +1,24 @@
 import "bootstrap-icons/font/bootstrap-icons.css";
 import { useState } from "react";
 import { Table, Button, Tooltip, OverlayTrigger } from "react-bootstrap";
-import API from "../API";
 
 function CourseRow(props) {
   const [expanded, setExpanded] = useState(false);
   return (
     <>
       <tr>
-        <td>{props.code}</td>
-        <td>{props.name}</td>
-        <td>{props.credits}</td>
-        <td>{props.currentStudentsNumber}</td>
-        <td>{props.maxStudentsNumber}</td>
+        <td>{props.course.code}</td>
+        <td>{props.course.name}</td>
+        <td>{props.course.credits}</td>
+        <td>{props.course.currentStudentsNumber}</td>
+        <td>{props.course.maxStudentsNumber}</td>
         <RowActions
           edit={props.edit} //true when in editing mode
           studyplan={props.studyplan} //true when called within studyplan table
           courses={props.courses} //all courses
-          code={props.code} //code of this course
           spcodes={props.spcodes} //studyplan courses codes
           wasIncluded={props.wasIncluded}
-          currentStudentsNumber={props.currentStudentsNumber}
-          maxStudentsNumber={props.maxStudentsNumber}
-          incompatibleCourses={props.incompatibleCourses}
-          preparatoryCourse={props.preparatoryCourse}
+          course={props.course}
           deleteCourseStudyplan={props.deleteCourseStudyplan}
           addCourseStudyplan={props.addCourseStudyplan}
           expanded={expanded}
@@ -32,8 +27,8 @@ function CourseRow(props) {
       </tr>
       {expanded && (
         <ExpandedRow
-          incompatibleCourses={props.incompatibleCourses}
-          preparatoryCourse={props.preparatoryCourse}
+          incompatibleCourses={props.course.incompatibleCourses}
+          preparatoryCourse={props.course.preparatoryCourse}
         />
       )}
     </>
@@ -44,14 +39,11 @@ function CourseRow(props) {
  * @param props.studyplan just to know whether we are in the coursetable or studyplantable
  * @param props.spcodes array of the courses codes in the studyplan
  * @param props.courses arra of all the courses
- * @param props.code code of the given course
- * @param props.preparatoryCourse
- * @param props.incompatibleCourses
- * @param props.deleteCourseStudyplan
+ * @param props.course
  * @param props.addCourseStudyplan
  * @param props.expanded
  * @param props.setExpanded
- * @returns
+ * @param props.wasIncluded
  */
 function RowActions(props) {
   /**
@@ -60,30 +52,26 @@ function RowActions(props) {
    * please note: _checkCourseToAdd is called only when props.studyplan is false, this because
    * this function (RowActions) can be called both in CourseTable and StudyplanTable.
    * In the latter case, there is no need to check if the course can be added in the studyplan
-   * because is already there, thus it is assigned [true, ""] to [ok, msg] which anyway in this case
-   * wont be used.
+   * because is already there.
    * _checkCourseToRemove instead, is called only when props.studyplan in true, in order to check
-   * whether a course cannot be removed because it is preparatory for another one which is in the studyplan.
+   * whether a course cannot be removed because it is the preparatory for another one which is in the studyplan.
    */
   const [ok, msg] = (props.edit &&
     (props.studyplan
-      ? _checkCourseToRemove(props.code, props.courses, props.spcodes)
+      ? _checkCourseToRemove(props.course.code, props.courses, props.spcodes)
       : _checkCourseToAdd(
-          props.code,
-          props.preparatoryCourse,
-          props.incompatibleCourses,
+          props.course.code,
+          props.course.preparatoryCourse,
+          props.course.incompatibleCourses,
           props.spcodes,
-          props.maxStudentsNumber,
-          props.currentStudentsNumber,
+          props.course.maxStudentsNumber,
+          props.course.currentStudentsNumber,
           props.wasIncluded
         ))) || [undefined, undefined];
 
   return (
     <td>
       {props.edit &&
-        /**
-         * can this course be removed from or added to the studyplan? well, let's choose the right button.
-         */
         (ok ? (
           props.studyplan ? (
             /**
@@ -96,7 +84,7 @@ function RowActions(props) {
               disabled={!ok}
               onClick={(event) => {
                 event.preventDefault();
-                props.deleteCourseStudyplan(props.code);
+                props.deleteCourseStudyplan(props.course.code);
               }}
             >
               <i className="bi bi-x-lg"></i>
@@ -108,16 +96,18 @@ function RowActions(props) {
               className="ms-1"
               onClick={(event) => {
                 event.preventDefault();
-                props.addCourseStudyplan(props.code);
+                props.addCourseStudyplan(props.course.code);
               }}
             >
               <i className="bi bi-plus"></i>
             </Button>
           )
         ) : (
+          /**show the reason why the course cannot be added/removed to/from studyplan */
           <CourseToolTip msg={msg} />
         ))}
       {!props.studyplan && (
+        /**expand the button only within the full courses table */
         <Button
           size="sm"
           variant="primary"
@@ -207,14 +197,14 @@ function CourseTable(props) {
   ).sort((a, b) => a.name.localeCompare(b.name));
 
   return (
-    <Table scrolly="true" size={props.loggedIn && "sm"} striped bordered hover>
+    <Table size="sm" striped borderless hover>
       <thead>
         <tr>
-          <th>code</th>
-          <th>name</th>
-          <th>credits</th>
-          <th>current students number</th>
-          <th>max students number</th>
+          <th>Code</th>
+          <th>Name</th>
+          <th>Credits</th>
+          <th>Current students number</th>
+          <th>Max students number</th>
           <th></th>
         </tr>
       </thead>
@@ -229,16 +219,9 @@ function CourseTable(props) {
               spcodes={props.spcodes} //StudyPlan courses codes
               wasIncluded={
                 props.oldspcodes && props.oldspcodes.includes(course.code)
-              }
-              loggedIn={props.loggedIn}
+              } //true if the course was included in the persistent studyplan
               key={course.code}
-              code={course.code}
-              name={course.name}
-              credits={course.credits}
-              preparatoryCourse={course.preparatoryCourse}
-              maxStudentsNumber={course.maxStudentsNumber}
-              incompatibleCourses={course.incompatibleCourses}
-              currentStudentsNumber={course.currentStudentsNumber}
+              course={course}
               deleteCourseStudyplan={props.deleteCourseStudyplan}
               addCourseStudyplan={props.addCourseStudyplan}
             />

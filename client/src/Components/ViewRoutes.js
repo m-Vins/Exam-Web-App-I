@@ -9,8 +9,10 @@ import "../App.css";
 function DefaultRoute() {
   return (
     <>
-      <h1>Nothing here...</h1>
-      <p>This is not the route you are looking for!</p>
+      <Navbar logInButton />
+      <Container>
+        <h1>Nothing here...</h1>
+      </Container>
     </>
   );
 }
@@ -18,7 +20,7 @@ function DefaultRoute() {
 function HomeRoute(props) {
   return (
     <>
-      <Navbar searchBar logInButton />
+      <Navbar logInButton />
       <Container>
         <CourseTable courses={props.courses} />
       </Container>
@@ -29,7 +31,7 @@ function HomeRoute(props) {
 function PersonalHomeRoute(props) {
   return (
     <PersonalHome
-      user={props.user}
+      spOption={props.spOption}
       courses={props.courses}
       getCourses={props.getCourses}
       handleLogOut={props.handleLogOut}

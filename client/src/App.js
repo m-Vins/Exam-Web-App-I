@@ -1,20 +1,17 @@
 import "bootstrap/dist/css/bootstrap.min.css";
-import logo from "./logo.svg";
-
 import "./App.css";
-
 import { useEffect, useState } from "react";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { Container } from "react-bootstrap";
 import { ToastContainer, toast, Bounce } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import API from "./API";
 import {
   DefaultRoute,
   HomeRoute,
   LoginRoute,
   PersonalHomeRoute,
 } from "./Components/ViewRoutes";
-import API from "./API";
 
 function App() {
   const [user, setUser] = useState(undefined);
@@ -34,7 +31,7 @@ function App() {
         return student.username;
       }),
       {
-        pending: "logging in",
+        pending: "Logging in",
         success: {
           render({ data }) {
             return `Welcome ${data} !`;
@@ -46,7 +43,7 @@ function App() {
     );
   };
 
-  const handleLogOut = async (credentials) => {
+  const handleLogOut = async () => {
     toast.promise(
       API.logOut().then(() => {
         setLoggedIn(false);
@@ -88,7 +85,7 @@ function App() {
             element={
               loggedIn ? (
                 <PersonalHomeRoute
-                  user={user}
+                  spOption={user.studyplan}
                   courses={courses}
                   getCourses={getCourses}
                   handleLogOut={handleLogOut}

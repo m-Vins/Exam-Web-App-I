@@ -23,7 +23,7 @@ function StudyPlanTitle(props) {
         </Col>
         <Col md={{ span: 4, offset: 1 }}>
           <h4>
-            {min} &ge; credits number &ge; {max}
+            {min} &le; credits number &le; {max}
           </h4>
         </Col>
       </Row>
@@ -33,7 +33,7 @@ function StudyPlanTitle(props) {
           max={max}
           label={"current credits :" + credits}
           striped
-          variant={credits > min ? "success" : "danger"}
+          variant={credits >= min ? "success" : "danger"}
         />
       </Row>
     </Container>
@@ -41,7 +41,7 @@ function StudyPlanTitle(props) {
 }
 
 function PersonalHome(props) {
-  const [studyplanOption, setStudyplanOption] = useState(props.user.studyplan);
+  const [studyplanOption, setStudyplanOption] = useState(props.spOption);
   const [oldStudyplan, setOldStudyplan] = useState([]);
   const [studyplan, setStudyplan] = useState([]);
   const [edit, setEdit] = useState(false);
@@ -134,7 +134,7 @@ function PersonalHome(props) {
   return (
     <>
       <Navbar
-        searchBar
+        logOutButton
         studyplanButton
         studyplan={studyplanOption}
         saveStudyplan={saveStudyplan}
@@ -143,17 +143,12 @@ function PersonalHome(props) {
         createStudyplan={createStudyplan}
         setEdit={setEdit}
         edit={edit}
-        logOutButton
         handleLogOut={props.handleLogOut}
       />
       <Container>
         <h3>Courses</h3>
-        <Container
-          //TODO can props.user be removed here?
-          className={props.user && studyplanOption ? "tableContainer mb-2" : ""}
-        >
+        <Container className={studyplanOption ? "tableContainer mb-2" : ""}>
           <CourseTable
-            loggedIn
             edit={edit}
             courses={props.courses}
             spcodes={studyplan}
@@ -162,7 +157,7 @@ function PersonalHome(props) {
           />
         </Container>
 
-        {props.user && studyplanOption && (
+        {studyplanOption && (
           <>
             <StudyPlanTitle
               courses={props.courses}
@@ -172,7 +167,6 @@ function PersonalHome(props) {
             <Container className="tableContainer">
               <CourseTable
                 studyplan
-                loggedIn
                 edit={edit}
                 courses={props.courses}
                 spcodes={studyplan}
