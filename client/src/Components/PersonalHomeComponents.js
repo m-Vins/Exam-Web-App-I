@@ -50,7 +50,7 @@ function PersonalHome(props) {
     const studyplan = await API.getStudyplan();
     setStudyplanOption(studyplan.option);
     setStudyplan(studyplan.courses);
-    setOldStudyplan(studyplan.coures);
+    setOldStudyplan(studyplan.courses);
   };
 
   const deleteStudyplan = () => {
