@@ -2,8 +2,6 @@ import { useState } from "react";
 import { Form, Button } from "react-bootstrap";
 import "../App.css";
 
-//TODO add a button to navigate to the home page
-
 function LogInForm(props) {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");

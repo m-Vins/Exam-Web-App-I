@@ -15,7 +15,15 @@ function NavbarComponent(props) {
     <Navbar sticky="top" bg="light" expand="lg" className="mb-2 navbar">
       <Container fluid>
         <Col className="d-flex justify-content-start">
-          <Navbar.Brand href="#">University Courses</Navbar.Brand>
+          <Navbar.Brand
+            href="#"
+            onClick={(event) => {
+              event.preventDefault();
+              navigate("/");
+            }}
+          >
+            University Courses
+          </Navbar.Brand>
         </Col>
 
         <Col className="d-flex justify-content-end">
