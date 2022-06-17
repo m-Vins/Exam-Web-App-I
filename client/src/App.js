@@ -85,7 +85,6 @@ function App() {
             element={
               loggedIn ? (
                 <PersonalHomeRoute
-                  spOption={user.studyplan}
                   courses={courses}
                   getCourses={getCourses}
                   handleLogOut={handleLogOut}

@@ -31,7 +31,6 @@ function HomeRoute(props) {
 function PersonalHomeRoute(props) {
   return (
     <PersonalHome
-      spOption={props.spOption}
       courses={props.courses}
       getCourses={props.getCourses}
       handleLogOut={props.handleLogOut}

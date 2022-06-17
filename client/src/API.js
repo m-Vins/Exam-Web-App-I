@@ -70,11 +70,11 @@ const getStudyplan = async () => {
   const response = await fetch(SERVER_URL + "/api/studyplan", {
     credentials: "include",
   });
-  const courses = await response.json();
+  const studyplan = await response.json();
   if (response.ok) {
-    return courses;
+    return studyplan;
   } else {
-    throw courses;
+    throw studyplan;
   }
 };
 
@@ -102,6 +102,7 @@ const deleteStudyplan = async () => {
   if (!response.ok) alert("something went wrong!");
 };
 
+//TODO can it be removed?
 const getStudyplanCourse = async (courseID) => {
   const response = await fetch(SERVER_URL + `/api/studyplan/${courseID}`, {
     credentials: "include",

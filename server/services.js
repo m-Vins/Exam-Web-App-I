@@ -36,10 +36,11 @@ function Services() {
       .getStudyPlan(studentID)
       .then((courses) => courses.filter((codes) => codes === courseID)[0]);
 
-  // this.getIncompatibleCourses = (code) =>
-  //   daoCourses.getIncompatibleCourses(code);
-
-  this.getStudyPlan = (studentID) => daoStudent.getStudyPlan(studentID);
+  this.getStudyPlan = (studentID) =>
+    daoStudent.getStudyPlan(studentID).then(async (sp) => {
+      const spOption = await daoStudent.getStudyPlanOption(studentID);
+      return { option: spOption, courses: sp };
+    });
 
   this.deleteStudyPlan = (studentID) => daoStudent.deleteStudyPlan(studentID);
 

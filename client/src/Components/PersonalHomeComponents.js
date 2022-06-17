@@ -41,15 +41,16 @@ function StudyPlanTitle(props) {
 }
 
 function PersonalHome(props) {
-  const [studyplanOption, setStudyplanOption] = useState(props.spOption);
+  const [studyplanOption, setStudyplanOption] = useState();
   const [oldStudyplan, setOldStudyplan] = useState([]);
   const [studyplan, setStudyplan] = useState([]);
   const [edit, setEdit] = useState(false);
 
   const getStudyplan = async () => {
-    const spcodes = await API.getStudyplan();
-    setStudyplan(spcodes);
-    setOldStudyplan(spcodes);
+    const studyplan = await API.getStudyplan();
+    setStudyplanOption(studyplan.option);
+    setStudyplan(studyplan.courses);
+    setOldStudyplan(studyplan.coures);
   };
 
   const deleteStudyplan = () => {
@@ -100,23 +101,18 @@ function PersonalHome(props) {
     );
   };
 
-  // const resetStudyplan = async () => {
-  //   toast.promise(
-  //     getStudyplan().then(() => {
-  //       setStudyplanOption(props.user.studyplan);
-  //       setEdit(false);
-  //     }),
-  //     {
-  //       pending: "Resetting Study Plan",
-  //       success: "Study Plan resetted",
-  //       error: "Server Error !",
-  //     },
-  //     { position: toast.POSITION.TOP_CENTER }
-  //   );
-  // };
-
-  const resetStudyplan = () => {
-    setStudyplan([...oldStudyplan]);
+  const resetStudyplan = async () => {
+    toast.promise(
+      getStudyplan().then(() => {
+        setEdit(false);
+      }),
+      {
+        pending: "Resetting Study Plan",
+        success: "Study Plan resetted",
+        error: "Server Error !",
+      },
+      { position: toast.POSITION.TOP_CENTER }
+    );
   };
 
   useEffect(() => {
