@@ -7,7 +7,7 @@ const crypto = require("crypto");
 
 /*
  * return the course codes of the courses within the studyplan
- * of the given student
+ * of the student with given the studentID
  */
 exports.getStudyPlan = (studentID) => {
   return new Promise((resolve, reject) => {
@@ -60,6 +60,7 @@ exports.addStudyPlan = (studentID, studyplan, courseCodes) => {
     });
   } else throw { message: "wrong studyplan option", code: 422 };
 };
+
 /*
  * delete the study plan for the given student
  *
@@ -82,6 +83,9 @@ exports.deleteStudyPlan = (studentID) => {
   });
 };
 
+/*
+ * get the Studyplan option fo the student with the given studentID
+ */
 exports.getStudyPlanOption = (studentID) => {
   return new Promise((resolve, reject) => {
     const sql = "SELECT studyplan FROM students WHERE id=?";
@@ -94,6 +98,9 @@ exports.getStudyPlanOption = (studentID) => {
   });
 };
 
+/*
+ * get the student with the given username and password
+ */
 exports.getStudent = (username, password) => {
   return new Promise((resolve, reject) => {
     const sql = "SELECT * FROM students WHERE username=?";
@@ -101,8 +108,11 @@ exports.getStudent = (username, password) => {
       if (err) reject(err);
       else if (row === undefined) resolve(false);
       else {
-        const student = new Student(row.id, row.username, row.studyplan);
+        const student = new Student(row.id, row.username);
         crypto.scrypt(password, row.salt, 64, function (err, hashedPassword) {
+          /**
+           * uncomment next line to generate the hash and read from the console
+           */
           //console.log(hashedPassword.toString("hex"));
           if (err) reject(err);
           if (

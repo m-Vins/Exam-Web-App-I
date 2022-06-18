@@ -4,6 +4,9 @@
 const { db } = require("./db");
 const { Course } = require("../Classes/Course");
 
+/*
+ * get the list of all the courses
+ */
 exports.listCourses = () => {
   return new Promise((resolve, reject) => {
     const sql = "SELECT * FROM courses";
@@ -26,6 +29,9 @@ exports.listCourses = () => {
   });
 };
 
+/*
+ * get the list of the incompatible course codes for the given course
+ */
 exports.getIncompatibleCourses = (code) => {
   return new Promise((resolve, reject) => {
     const sql = "SELECT * FROM incompatibleCourses WHERE code_1=? OR code_2=?";

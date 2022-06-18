@@ -1,5 +1,4 @@
 "use strict";
-
 const daoCourses = require("./DAO/dao-courses");
 const daoStudent = require("./DAO/dao-students");
 
@@ -30,11 +29,6 @@ function Services() {
       )
     );
 
-  this.getStudyPlanCourse = (studentID, courseID) =>
-    daoStudent
-      .getStudyPlan(studentID)
-      .then((courses) => courses.filter((codes) => codes === courseID)[0]);
-
   this.getStudyPlan = (studentID) =>
     daoStudent.getStudyPlan(studentID).then(async (sp) => {
       const spOption = await daoStudent.getStudyPlanOption(studentID);
@@ -43,11 +37,12 @@ function Services() {
 
   this.deleteStudyPlan = (studentID) => daoStudent.deleteStudyPlan(studentID);
 
+  //TODO TEST IT
   this.addStudyPlan = async (studentID, studyplan, courseCodes) => {
     /*
      * here the back end double check the validity of the study plan.
      * each time the client need to modify the study plan, it should send a
-     * new studyplan from scratch
+     * new studyplan
      */
     let errMessage = [];
 
@@ -56,9 +51,16 @@ function Services() {
       throw { message: "wrong studyplan option", code: 422 };
     }
 
+    /**
+     * check duplicated courses
+     */
     if ([...new Set(courseCodes)].length != courseCodes.length)
       throw { message: "courseCodes contains duplicated elements", code: 422 };
 
+    /**
+     * create an array of the courses of the studyplan with all the info needed
+     * to perform the checks
+     */
     const courses = await daoCourses
       .listCourses()
       .then((courses) =>
