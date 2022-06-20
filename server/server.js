@@ -6,6 +6,7 @@ const cors = require("cors");
 const passport = require("passport");
 const LocalStrategy = require("passport-local");
 const session = require("express-session");
+const { body, validationResult } = require("express-validator");
 
 const Services = require("./services");
 
@@ -29,6 +30,7 @@ passport.use(
   })
 );
 
+//TODO CHANGE THE INFORMATION SAVED HERE
 passport.serializeUser(function (student, cb) {
   cb(null, student);
 });
@@ -49,7 +51,7 @@ app.use(passport.authenticate("session"));
 
 const isLoggedIn = (req, res, next) => {
   if (req.isAuthenticated()) return next();
-  return res.status(401).end();
+  return res.status(401).json({ error: "Wrong credentials   " });
 };
 
 // activate the server
@@ -64,13 +66,6 @@ app.get("/api/courses", (req, res) => {
     .catch((err) => res.status(500).json(err));
 });
 
-app.get("/api/studyplan/:courseID", isLoggedIn, (req, res) => {
-  services
-    .getStudyPlanCourse(req.user.id, req.params.courseID)
-    .then((course) => (course ? res.status(200).end() : res.status(404).end()))
-    .catch((err) => res.status(500).json(err));
-});
-
 app.get("/api/studyplan", isLoggedIn, (req, res) => {
   services
     .getStudyPlan(req.user.id)
@@ -78,16 +73,29 @@ app.get("/api/studyplan", isLoggedIn, (req, res) => {
     .catch((err) => res.status(500).json(err));
 });
 
-app.post("/api/studyplan", isLoggedIn, (req, res) => {
-  services
-    .addStudyPlan(req.user.id, req.body.studyplan, req.body.courses)
-    .then(() => res.status(200).end())
-    .catch((err) =>
-      err.code && err.code <= 500
-        ? res.status(err.code).json(err)
-        : res.status(500).json(err)
-    );
-});
+//TODO add validation
+app.post(
+  "/api/studyplan",
+  isLoggedIn,
+  body("studyplan").isIn(["part-time", "full-time"]),
+  body("courses").isArray(),
+  body("courses.*").isString().isLength({ min: 7, max: 7 }),
+  (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(422).json({ errors: errors.array() });
+    }
+
+    services
+      .addStudyPlan(req.user.id, req.body.studyplan, req.body.courses)
+      .then(() => res.status(200).end())
+      .catch((err) =>
+        err.code && err.code <= 500
+          ? res.status(err.code).json(err)
+          : res.status(500).json(err)
+      );
+  }
+);
 
 app.delete("/api/studyplan", isLoggedIn, (req, res) => {
   services
@@ -96,10 +104,20 @@ app.delete("/api/studyplan", isLoggedIn, (req, res) => {
     .catch((err) => res.status(500).json(err));
 });
 
-app.post("/api/sessions", passport.authenticate("local"), (req, res) => {
-  // new Promise(() => setTimeout(() => res.status(201).json(req.user), 3000));
-  res.status(201).json(req.user);
-});
+app.post(
+  "/api/sessions",
+  body("username").isEmail(),
+  passport.authenticate("local"),
+  body("password").isLength({ min: 6 }),
+  (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(422).json({ errors: errors.array() });
+    }
+
+    res.status(201).json(req.user);
+  }
+);
 
 app.delete("/api/sessions/current", (req, res) => {
   req.logout(() => {
