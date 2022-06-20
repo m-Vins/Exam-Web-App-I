@@ -126,10 +126,7 @@ function RowActions(props) {
 function CourseToolTip(props) {
   return (
     <>
-      <OverlayTrigger
-        placement="right"
-        overlay={<Tooltip>{props.msg}</Tooltip>}
-      >
+      <OverlayTrigger placement="top" overlay={<Tooltip>{props.msg}</Tooltip>}>
         {
           <Button className="ms-1" size="sm" variant="danger">
             <i className="bi bi-exclamation-circle"></i>
@@ -261,7 +258,7 @@ function _checkCourseToAdd(
    * if the course is already present in the studyplan it cannot be inserted again
    */
   if (spcodes.includes(courseCode))
-    return [false, "course already present in studyplan"];
+    return [false, "Course already present in your studyplan!"];
 
   /**
    * checking the presence of incompatible courses with the given course
@@ -280,8 +277,9 @@ function _checkCourseToAdd(
   if (SPincompatibleCourses.length > 0) {
     msg += "Incompatible courses : ";
     for (const incompatibleCourse of SPincompatibleCourses)
-      msg += incompatibleCourse;
-    msg += "\n";
+      msg += incompatibleCourse + " - ";
+    msg = msg.substring(0, msg.length - 3);
+    msg += "!";
   }
 
   /**
@@ -308,7 +306,7 @@ function _checkCourseToAdd(
     currentStudentsNumber + 1 > maxStudentsNumber &&
     !present
   )
-    msg += "The course capacity is full";
+    msg += "The course capacity is full!";
 
   return [!msg.length > 0, msg];
 }

@@ -73,7 +73,6 @@ app.get("/api/studyplan", isLoggedIn, (req, res) => {
     .catch((err) => res.status(500).json(err));
 });
 
-//TODO add validation
 app.post(
   "/api/studyplan",
   isLoggedIn,
@@ -107,8 +106,8 @@ app.delete("/api/studyplan", isLoggedIn, (req, res) => {
 app.post(
   "/api/sessions",
   body("username").isEmail(),
-  passport.authenticate("local"),
   body("password").isLength({ min: 6 }),
+  passport.authenticate("local"),
   (req, res) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
