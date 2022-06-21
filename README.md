@@ -1,77 +1,117 @@
-# Exam #12345: "Exam Title"
+# Exam #1: "StudyPlan"
 
 ## Student: s294999 MEZZELA VINCENZO
 
 ## React Client Application Routes
 
-- Route `/`: page content and purpose
-- Route `/something/:param`: page content and purpose, param specification
-- ...
+- Route `/`
+  - if logged in : personal home page
+  - not logged in : anonymous home page
+- Route `/login`: Here the user can login
 
 ## API Server
 
-- POST `/api/login`
-  - request parameters and request body content
-  - response body content
-- GET `/api/something`
-  - request parameters
-  - response body content
-- POST `/api/something`
-  - request parameters and request body content
-  - response body content
-- ...
+- GET `/api/courses`
+
+  - Get the list of all the courses in the university.
+  - **Response body** contains the list of all the courses :
+
+    ```
+    [
+      {
+        code: "02GOLOV",
+        name: "Architetture dei sistemi di elaborazione",
+        credits: 12,
+        preparatoryCourse: null,
+        maxStudentsNumber: null,
+        incompatibleCourses: ["02LSEOV"],
+        currentStudentsNumber: 1,
+      },
+      ...
+    ];
+
+    ```
+
+- GET `/api/studyplans`
+  - Get the studyplan of the logged-in student.
+  - **Response body** contains information about the studyplan of the logged-in student :
+    ```
+    {
+      option: "part-time",
+      courses: ["01UDFOV", "03UEWOV", "01URROV", "01OTWOV", "01NYHOV"],
+    }
+    ```
+- POST `/api/studyplans`
+  - Save the studyplan for the logged-in student.
+  - **Request body** contains information about the new studyplan :
+    ```
+    {
+      option: "part-time",
+      courses: ["01UDFOV", "03UEWOV", "01URROV", "01OTWOV", "01NYHOV"],
+    }
+    ```
+- DELETE `/api/studyplans`
+  - Delete the studyplan of the logged-in student.
+- GET `/api/sessions/current`
+  - Get the information about the logged-in student.
+  - **Response body** contains :
+    ```
+    { id: 1, username: "test1@uni.edu" }
+    ```
+- POST `/api/sessions`
+  - Student log in.
+  - **Request body** contains login information:
+    ```
+    { username: "test1@uni.edu", password: "password" }
+    ```
+  - **Resonse body** contains user information:
+    ```
+    { id: 1, username: "test1@uni.edu" }
+    ```
+- DELETE `/api/sessions/current`
+  - Student log out.
 
 ## Database Tables
 
-##### Legend
-
-- **`primary key`**
-- **not null fields**
-- **_optional fields_**
-
 ### COURSES
 
-- **`code`**
-- **name**
-- **credits**
-- **_preparatoryCourse_**
-- **_maxStudentsNumber_**
+**`code`**, **name**, **credits**, **_preparatoryCourse_**, **_maxStudentsNumber_**
 
 ### STUDENTS
 
-- **`id`**
-- **username**
-- **salt**
-- **hash**
-- **_studyplan_** can be
-  1. `part-time`
-  2. `full-time`
-  3. `NULL` in case the student haven't any studyplan, thus there should be no record in the **STUDY-PLANS** table with the relative **`studentID`**
+**`id`**, **username**, **salt**, **hash**, **_studyplan_**
 
 ### STUDYPLANS
 
-- **`studentID`**
-- **`courseID`**
-- **permanent**
+**`studentID`**, **`courseID`**
 
 ### INCOMPATIBLECOURSES
 
-- **`code_1`**
-- **`code_2`**
+**`code_1`**, **`code_2`**
+
+##### Legend
+
+**`primary key`**, **not null fields**, **_optional fields_**
 
 ## Main React Components
 
-- `ListOfSomething` (in `List.js`): component purpose and main functionality
-- `GreatButton` (in `GreatButton.js`): component purpose and main functionality
-- ...
-
-(only _main_ components, minor ones may be skipped)
+- `LogInForm` (in [LoginFormCompontents.js](./client/src/Components/LoginFormComponents.js)) : It is a simple form to handle the login.
+- `NavbarComponent` (in [NavbarComponents.js](./client/src/Components/NavbarComponents.js)) : It is a simple Navbar. it display the App name on the left, which is also clickable, and some other button (`Login`,`Logout`,`Create Study Plan`, ...) depending on the props passed to the component.
+- `CourseTable` (in [TableComponents.js](./client/src/Components/TableCompontens.js)) : It is a course table, used both for the full courses list and for the studyplan. Its rendering depends on the props it receives, as this component is used for different purpose. It can expand a row to show other course info, also there can be different button to properly handle the editing of the studyplan, and finally course that cannot be added to/removed from the studyplan are marked differently, and the reason is shown passing the mouse over the exclamation mark.
+- `DefaultRoute` (in [ViewRoutes.js](./client/src/Components/ViewRoutes.js)) : It is the Component for the default page.
+- `HomeRoute` (in [ViewRoutes.js](./client/src/Components/ViewRoutes.js)) : It is the Component for the not-logged-in home page.
+- `PersonalHome` (in [PersonalHomeComponents.js](./client/src/Components/PersonalHomeComponents.js)) : It is the component for logged-in home page. Here it is handled the studyplan with `saveStudyplan`,`createStudyplan`,`deleteStudyplan`,`getStudyplan`.
 
 ## Screenshot
 
-![Screenshot](./img/screenshot.jpg)
+![Home page](./img/editing.png)
 
 ## Users Credentials
 
-- username, password (plus any other requested info)
-- username, password (plus any other requested info)
+| Username      | Password | Studyplan |
+| ------------- | -------- | --------- |
+| test1@uni.edu | password | part-time |
+| test2@uni.edu | password | full-time |
+| test3@uni.edu | password | full-time |
+| test4@uni.edu | password | part-time |
+| test5@uni.edu | password |           |
