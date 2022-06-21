@@ -73,7 +73,7 @@ app.get("/api/courses", (req, res) => {
     .catch((err) => res.status(500).json(err));
 });
 
-app.get("/api/studyplan", isLoggedIn, (req, res) => {
+app.get("/api/studyplans", isLoggedIn, (req, res) => {
   services
     .getStudyPlan(req.user.id)
     .then((courses) => res.status(200).json(courses))
@@ -81,15 +81,15 @@ app.get("/api/studyplan", isLoggedIn, (req, res) => {
 });
 
 app.post(
-  "/api/studyplan",
+  "/api/studyplans",
   isLoggedIn,
-  body("studyplan").isIn(["part-time", "full-time"]),
+  body("option").isIn(["part-time", "full-time"]),
   body("courses").isArray(),
   body("courses.*").isString().isLength({ min: 7, max: 7 }),
   validation,
   (req, res) => {
     services
-      .addStudyPlan(req.user.id, req.body.studyplan, req.body.courses)
+      .addStudyPlan(req.user.id, req.body.option, req.body.courses)
       .then(() => res.status(200).end())
       .catch((err) =>
         err.code && err.code <= 500
@@ -99,7 +99,7 @@ app.post(
   }
 );
 
-app.delete("/api/studyplan", isLoggedIn, (req, res) => {
+app.delete("/api/studyplans", isLoggedIn, (req, res) => {
   services
     .deleteStudyPlan(req.user.id)
     .then(() => res.status(204).end())
@@ -134,3 +134,5 @@ app.get("/api/sessions/current", (req, res) => {
     res.status(401).json({ error: "Not authenticated" });
   }
 });
+
+const a = { username: "test1@uni.edu", password: "password" };

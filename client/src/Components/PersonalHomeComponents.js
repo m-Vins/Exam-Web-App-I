@@ -53,7 +53,7 @@ function PersonalHome(props) {
       setStudyplan(studyplan.courses);
       setOldStudyplan(studyplan.courses);
     } catch (err) {
-      toast.error(`Server Error : ${JSON.stringify(err)}`, {
+      toast.error("Server Error !", {
         position: toast.POSITION.TOP_CENTER,
       });
     }

@@ -26,7 +26,7 @@ function App() {
       const courses = await API.getAllCourses();
       setCourses(courses);
     } catch (err) {
-      toast.error(`Server Error : ${JSON.stringify(err)}`, {
+      toast.error(`Server Error !`, {
         position: toast.POSITION.TOP_CENTER,
       });
     }
