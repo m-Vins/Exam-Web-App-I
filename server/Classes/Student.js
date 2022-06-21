@@ -7,10 +7,9 @@
  * @param {string} studyplan
  */
 
-function Student(id, username, studyplan = null) {
+function Student(id, username) {
   this.id = id;
   this.username = username;
-  this.studyplan = studyplan;
 }
 
 exports.Student = Student;
