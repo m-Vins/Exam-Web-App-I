@@ -37,7 +37,6 @@ function Services() {
 
   this.deleteStudyPlan = (studentID) => daoStudent.deleteStudyPlan(studentID);
 
-  //TODO TEST IT
   this.addStudyPlan = async (studentID, studyplan, courseCodes) => {
     /*
      * here the back end double check the validity of the study plan.
@@ -45,11 +44,6 @@ function Services() {
      * new studyplan
      */
     let errMessage = [];
-
-    //TODO move it to body validation
-    if (!["part-time", "full-time"].includes(studyplan)) {
-      throw { message: "wrong studyplan option", code: 422 };
-    }
 
     /**
      * check duplicated courses
@@ -87,6 +81,12 @@ function Services() {
           })
         )
       );
+
+    /**
+     * check if courseCodes contains invalid codes
+     */
+    if (courses.length !== courseCodes.length)
+      throw { message: "courseCodes contains invalid codes", code: 422 };
 
     //check constraints
     for (const course of courses) {
