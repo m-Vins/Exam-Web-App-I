@@ -30,7 +30,6 @@ passport.use(
   })
 );
 
-//TODO CHANGE THE INFORMATION SAVED HERE
 passport.serializeUser(function (student, cb) {
   cb(null, student);
 });
@@ -52,6 +51,14 @@ app.use(passport.authenticate("session"));
 const isLoggedIn = (req, res, next) => {
   if (req.isAuthenticated()) return next();
   return res.status(401).json({ error: "Wrong credentials   " });
+};
+
+const validation = (req, res, next) => {
+  const errors = validationResult(req);
+  if (errors.isEmpty()) {
+    return next();
+  }
+  return res.status(422).json({ errors: errors.array() });
 };
 
 // activate the server
@@ -79,12 +86,8 @@ app.post(
   body("studyplan").isIn(["part-time", "full-time"]),
   body("courses").isArray(),
   body("courses.*").isString().isLength({ min: 7, max: 7 }),
+  validation,
   (req, res) => {
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-      return res.status(422).json({ errors: errors.array() });
-    }
-
     services
       .addStudyPlan(req.user.id, req.body.studyplan, req.body.courses)
       .then(() => res.status(200).end())
@@ -107,13 +110,9 @@ app.post(
   "/api/sessions",
   body("username").isEmail(),
   body("password").isLength({ min: 6 }),
+  validation,
   passport.authenticate("local"),
   (req, res) => {
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-      return res.status(422).json({ errors: errors.array() });
-    }
-
     res.status(201).json(req.user);
   }
 );
