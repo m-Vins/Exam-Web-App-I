@@ -47,10 +47,16 @@ function PersonalHome(props) {
   const [edit, setEdit] = useState(false);
 
   const getStudyplan = async () => {
-    const studyplan = await API.getStudyplan();
-    setStudyplanOption(studyplan.option);
-    setStudyplan(studyplan.courses);
-    setOldStudyplan(studyplan.courses);
+    try {
+      const studyplan = await API.getStudyplan();
+      setStudyplanOption(studyplan.option);
+      setStudyplan(studyplan.courses);
+      setOldStudyplan(studyplan.courses);
+    } catch (err) {
+      toast.error(`Server Error : ${JSON.stringify(err)}`, {
+        position: toast.POSITION.TOP_CENTER,
+      });
+    }
   };
 
   const deleteStudyplan = () => {
@@ -66,14 +72,11 @@ function PersonalHome(props) {
         pending: "Deleting Study Plan",
         success: "Study Plan deleted !",
         error: "Server Error !",
-      },
-      { position: toast.POSITION.TOP_CENTER }
+      }
     );
   };
 
   const createStudyplan = (spOption) => {
-    if (!["part-time", "full-time", undefined].includes(spOption))
-      throw new Error("wrong studyplan option !");
     setStudyplanOption(spOption);
   };
 
@@ -96,8 +99,7 @@ function PersonalHome(props) {
             return `Error : ${data} !`;
           },
         },
-      },
-      { position: toast.POSITION.TOP_CENTER }
+      }
     );
   };
 
@@ -110,8 +112,7 @@ function PersonalHome(props) {
         pending: "Resetting Study Plan",
         success: "Study Plan resetted",
         error: "Server Error !",
-      },
-      { position: toast.POSITION.TOP_CENTER }
+      }
     );
   };
 

@@ -39,15 +39,17 @@ function CourseRow(props) {
  * @param props.studyplan just to know whether we are in the coursetable or studyplantable
  * @param props.spcodes array of the courses codes in the studyplan
  * @param props.courses arra of all the courses
+ * @param props.edit
  * @param props.course
  * @param props.addCourseStudyplan
+ * @param props.deleteCourseStudyplan
  * @param props.expanded
  * @param props.setExpanded
  * @param props.wasIncluded
  */
 function RowActions(props) {
   /**
-   * check if the course can be added to or removed from the studyplan.
+   * check if the course can be added to/removed from the studyplan.
    *
    * please note: _checkCourseToAdd is called only when props.studyplan is false, this because
    * this function (RowActions) can be called both in CourseTable and StudyplanTable.
@@ -55,6 +57,8 @@ function RowActions(props) {
    * because is already there.
    * _checkCourseToRemove instead, is called only when props.studyplan in true, in order to check
    * whether a course cannot be removed because it is the preparatory for another one which is in the studyplan.
+   *
+   * both of these functions are called only in editing mode.
    */
   const [ok, msg] = (props.edit &&
     (props.studyplan
@@ -103,11 +107,11 @@ function RowActions(props) {
             </Button>
           )
         ) : (
-          /**show the reason why the course cannot be added/removed to/from studyplan */
+          /**show the reason why the course cannot be added to/removed from studyplan */
           <CourseToolTip msg={msg} />
         ))}
       {!props.studyplan && (
-        /**expand the button only within the full courses table */
+        /**expand button only within the full courses table */
         <Button
           size="sm"
           variant="primary"
@@ -185,6 +189,13 @@ function ExpandedRow(props) {
  * @param props.loggedIn is needed to let us know whether it is needed to shown the actions column, while
  * @param props.studyplan is true when it is called to render the studyplan table
  *
+ * @param props.courses is the full list of courses
+ * @param props.studyplan is the list of studyplan course codes
+ * @param props.edit true when in editing mode
+ * @param props.oldspcodes the list of the old studplan course codes
+ * @param props.addCourseStudyplan
+ * @param props.deleteCourseStudyplan
+ *
  */
 function CourseTable(props) {
   const coursesToShow = (
@@ -210,13 +221,13 @@ function CourseTable(props) {
         {coursesToShow.map((course) => {
           return (
             <CourseRow
-              edit={props.edit}
+              edit={props.edit} //true when in editing mode
               studyplan={props.studyplan} //true when in studyplan table
               courses={props.courses} //all courses
               spcodes={props.spcodes} //StudyPlan courses codes
               wasIncluded={
                 props.oldspcodes && props.oldspcodes.includes(course.code)
-              } //true if the course was included in the persistent studyplan
+              } //true if the course is included in the persistent studyplan
               key={course.code}
               course={course}
               deleteCourseStudyplan={props.deleteCourseStudyplan}
@@ -235,6 +246,9 @@ function CourseTable(props) {
  * @param  preparatoryCourse preparatory course
  * @param  incompatibleCourses array of the incompatible courses codes
  * @param  spcodes the codes of the courses alredy in the studyplan
+ * @param  maxStudentsNumber
+ * @param  currentStudentsNumber
+ * @param  present is true when the given course is already present in the studyplan saved on the database
  *
  * @returns an array of two variables : [error, message] where error is false when the course cannot be inserted in the studyplan and the relative message
  */
@@ -279,7 +293,7 @@ function _checkCourseToAdd(
     for (const incompatibleCourse of SPincompatibleCourses)
       msg += incompatibleCourse + " - ";
     msg = msg.substring(0, msg.length - 3);
-    msg += "!";
+    msg += "!\n";
   }
 
   /**
@@ -295,16 +309,15 @@ function _checkCourseToAdd(
    * in case the current student number + 1 is greater than the max students
    * number (if any) , a quick check if the course is already in the studyplan
    * of the student.
-   * It is needed because in case the student already had this course, and delete it
-   * temporarly from the studyplan, then during the same editing session it cannot re-insert
-   * this course because the current student number is updated only when the studyplan is saved.
    *
+   * the check is done only if the course is not present in the studyplan on the database,
+   * since the currentStudentsNumber is updated only when the studyplan is saved.
    */
 
   if (
+    !present &&
     maxStudentsNumber &&
-    currentStudentsNumber + 1 > maxStudentsNumber &&
-    !present
+    currentStudentsNumber + 1 > maxStudentsNumber
   )
     msg += "The course capacity is full!";
 
@@ -312,7 +325,7 @@ function _checkCourseToAdd(
 }
 
 /**
- * This function check whether an course in the studyplan
+ * This function check whether a course in the studyplan
  * is the preparatory course of another course in the studyplan.
  *
  * @param courseCode is the code of the given course
@@ -326,7 +339,7 @@ function _checkCourseToRemove(courseCode, courses, spcodes) {
     .filter((course) => course.preparatoryCourse === courseCode)[0];
 
   return course
-    ? [false, "this course is the preparatory course for : " + course.code]
+    ? [false, "This course is the preparatory course for : " + course.code]
     : [true, ""];
 }
 

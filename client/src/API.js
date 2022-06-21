@@ -3,8 +3,6 @@ import Student from "./Classes/Student";
 
 const SERVER_URL = "http://localhost:3001";
 
-//TODO fix error messages
-
 const getAllCourses = async () => {
   const response = await fetch(SERVER_URL + "/api/courses");
   const responseJson = await response.json();

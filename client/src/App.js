@@ -14,20 +14,28 @@ import {
 } from "./Components/ViewRoutes";
 
 function App() {
-  const [user, setUser] = useState(undefined);
+  /**
+   * it is enough to use a loggedIn state, not any information about the user
+   * are needed as they are not used.
+   */
   const [courses, setCourses] = useState([]);
   const [loggedIn, setLoggedIn] = useState(false);
 
   const getCourses = async () => {
-    const courses = await API.getAllCourses();
-    setCourses(courses);
+    try {
+      const courses = await API.getAllCourses();
+      setCourses(courses);
+    } catch (err) {
+      toast.error(`Server Error : ${JSON.stringify(err)}`, {
+        position: toast.POSITION.TOP_CENTER,
+      });
+    }
   };
 
   const handleLogIn = async (username, password) => {
     toast.promise(
       API.logIn({ username, password }).then((student) => {
         setLoggedIn(true);
-        setUser(student);
         return student.username;
       }),
       {
@@ -38,8 +46,7 @@ function App() {
           },
         },
         error: "Wrong Credentials !",
-      },
-      { position: toast.POSITION.TOP_CENTER }
+      }
     );
   };
 
@@ -47,23 +54,20 @@ function App() {
     toast.promise(
       API.logOut().then(() => {
         setLoggedIn(false);
-        setUser(undefined);
       }),
       {
         pending: "Logging out",
         success: "Succesfully logged out",
         error: "Server Error !",
-      },
-      { position: toast.POSITION.TOP_CENTER }
+      }
     );
   };
 
   useEffect(() => {
     const checkAuth = async () => {
       try {
-        const student = await API.getUserInfo();
+        await API.getUserInfo();
         setLoggedIn(true);
-        setUser(student);
       } catch (e) {
         setLoggedIn(false);
       }
@@ -77,7 +81,11 @@ function App() {
 
   return (
     <Container fluid>
-      <ToastContainer transition={Bounce} autoClose={1500} />
+      <ToastContainer
+        transition={Bounce}
+        autoClose={1500}
+        position={toast.POSITION.TOP_CENTER}
+      />
       <BrowserRouter>
         <Routes>
           <Route

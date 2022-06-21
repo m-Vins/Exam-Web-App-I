@@ -58,7 +58,7 @@ function NavbarComponent(props) {
                   props.setEdit(false);
                 }}
               >
-                Delete studyplan
+                Delete
               </Button>
             </>
           )}
