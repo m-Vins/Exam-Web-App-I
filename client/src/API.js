@@ -50,6 +50,8 @@ const logOut = async () => {
   });
   if (response.ok) {
     return null;
+  } else {
+    throw response;
   }
 };
 
@@ -57,12 +59,13 @@ const getUserInfo = async () => {
   const response = await fetch(SERVER_URL + "/api/sessions/current", {
     credentials: "include",
   });
-  const user = await response.json();
-  const student = new Student(user.id, user.username, user.studyplan);
+
   if (response.ok) {
+    const user = await response.json();
+    const student = new Student(user.id, user.username);
     return student;
   } else {
-    throw user;
+    throw response.text();
   }
 };
 
@@ -99,18 +102,9 @@ const deleteStudyplan = async () => {
     credentials: "include",
   });
 
-  if (!response.ok) alert("something went wrong!");
-};
-
-//TODO can it be removed?
-const getStudyplanCourse = async (courseID) => {
-  const response = await fetch(SERVER_URL + `/api/studyplan/${courseID}`, {
-    credentials: "include",
-  });
-
-  if (response.ok) return true;
-  if (response.status === 404) return false;
-  throw response.status;
+  if (response.ok) return;
+  const responseJson = await response.json();
+  throw responseJson;
 };
 
 const API = {
@@ -121,6 +115,5 @@ const API = {
   getStudyplan,
   saveStudyplan,
   deleteStudyplan,
-  getStudyplanCourse,
 };
 export default API;
