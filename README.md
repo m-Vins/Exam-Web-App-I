@@ -5,15 +5,16 @@
 ## React Client Application Routes
 
 - Route `/`
-  - if logged in : personal home page
-  - not logged in : anonymous home page
-- Route `/login`: Here the user can login
+  - if logged in : personal home page with the list of all the university courses and the studyplan (if any). Here the student can create/edit/delete the studyplan.
+  - not logged in : home page with the list of all the university courses.
+- Route `/login`: Here the user can login.
+- Route `/*`: Default route.
 
 ## API Server
 
 - GET `/api/courses`
 
-  - Get the list of all the courses in the university.
+  - Get the list of all the university courses .
   - **Response body** contains the list of all the courses :
 
     ```
@@ -75,17 +76,25 @@
 
 ### COURSES
 
+This table stores the informations about all the courses.
+
 **`code`**, **name**, **credits**, **_preparatoryCourse_**, **_maxStudentsNumber_**
 
 ### STUDENTS
+
+This table stores the informations about all the students and their studyplan option.
 
 **`id`**, **username**, **salt**, **hash**, **_studyplan_**
 
 ### STUDYPLANS
 
+This table stores the all the courses codes of each student studyplan.
+
 **`studentID`**, **`courseID`**
 
 ### INCOMPATIBLECOURSES
+
+This table stores the pairs of incompatible courses.
 
 **`code_1`**, **`code_2`**
 
@@ -96,11 +105,11 @@
 ## Main React Components
 
 - `LogInForm` (in [LoginFormCompontents.js](./client/src/Components/LoginFormComponents.js)) : It is a simple form to handle the login.
-- `NavbarComponent` (in [NavbarComponents.js](./client/src/Components/NavbarComponents.js)) : It is a simple Navbar. it display the App name on the left, which is also clickable, and some other button (`Login`,`Logout`,`Create Study Plan`, ...) depending on the props passed to the component.
+- `NavbarComponent` (in [NavbarComponents.js](./client/src/Components/NavbarComponents.js)) : It is a simple Navbar. it display the App name on the left, which is also clickable, and some other buttons (`Login`, `Logout`, `Create Study Plan`, ...) depending on the props passed to the component.
 - `CourseTable` (in [TableComponents.js](./client/src/Components/TableCompontens.js)) : It is a course table, used both for the full courses list and for the studyplan. Its rendering depends on the props it receives, as this component is used for different purpose. It can expand a row to show other course info, also there can be different button to properly handle the editing of the studyplan, and finally course that cannot be added to/removed from the studyplan are marked differently, and the reason is shown passing the mouse over the exclamation mark.
 - `DefaultRoute` (in [ViewRoutes.js](./client/src/Components/ViewRoutes.js)) : It is the Component for the default page.
-- `HomeRoute` (in [ViewRoutes.js](./client/src/Components/ViewRoutes.js)) : It is the Component for the not-logged-in home page.
-- `PersonalHome` (in [PersonalHomeComponents.js](./client/src/Components/PersonalHomeComponents.js)) : It is the component for logged-in home page. Here it is handled the studyplan with `saveStudyplan`,`createStudyplan`,`deleteStudyplan`,`getStudyplan`.
+- `HomeRoute` (in [ViewRoutes.js](./client/src/Components/ViewRoutes.js)) : It is the Component for the not logged-in home page with the list of all the university courses.
+- `PersonalHome` (in [PersonalHomeComponents.js](./client/src/Components/PersonalHomeComponents.js)) : It is the component for logged-in home page. Here it is  shown the list of all the university courses and the studyplan (if any). It also handle the studyplan with `saveStudyplan`,`createStudyplan`,`deleteStudyplan`,`getStudyplan`.
 
 ## Screenshot
 
