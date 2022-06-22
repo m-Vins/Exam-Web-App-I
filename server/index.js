@@ -90,7 +90,7 @@ app.post(
   (req, res) => {
     services
       .addStudyPlan(req.user.id, req.body.option, req.body.courses)
-      .then(() => res.status(200).end())
+      .then(() => res.status(201).end())
       .catch((err) =>
         err.code && err.code <= 500
           ? res.status(err.code).json(err)
