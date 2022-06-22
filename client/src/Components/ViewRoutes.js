@@ -20,7 +20,7 @@ function DefaultRoute() {
 function HomeRoute(props) {
   return (
     <>
-      <Navbar logInButton />
+      <Navbar loading={props.loading} logInButton />
       <Container>
         <CourseTable courses={props.courses} />
       </Container>
@@ -31,6 +31,7 @@ function HomeRoute(props) {
 function PersonalHomeRoute(props) {
   return (
     <PersonalHome
+      loading={props.loading}
       courses={props.courses}
       getCourses={props.getCourses}
       handleLogOut={props.handleLogOut}

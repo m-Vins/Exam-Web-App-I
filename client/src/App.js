@@ -19,17 +19,18 @@ function App() {
    * are needed as they are not used.
    */
   const [courses, setCourses] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [loggedIn, setLoggedIn] = useState(false);
 
   const getCourses = async () => {
+    setLoading(true);
     try {
       const courses = await API.getAllCourses();
       setCourses(courses);
     } catch (err) {
-      toast.error(`Server Error !`, {
-        position: toast.POSITION.TOP_CENTER,
-      });
+      toast.error(`Server Error !`);
     }
+    setLoading(false);
   };
 
   const handleLogIn = async (username, password) => {
@@ -93,12 +94,13 @@ function App() {
             element={
               loggedIn ? (
                 <PersonalHomeRoute
+                  loading={loading}
                   courses={courses}
                   getCourses={getCourses}
                   handleLogOut={handleLogOut}
                 />
               ) : (
-                <HomeRoute courses={courses} />
+                <HomeRoute loading={loading} courses={courses} />
               )
             }
           ></Route>

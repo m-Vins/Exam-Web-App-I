@@ -5,6 +5,7 @@ import {
   Button,
   DropdownButton,
   Dropdown,
+  Spinner,
 } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import "../App.css";
@@ -24,6 +25,7 @@ function NavbarComponent(props) {
           >
             University Courses
           </Navbar.Brand>
+          {props.loading && <Spinner animation="grow" />}
         </Col>
 
         <Col className="d-flex justify-content-end">

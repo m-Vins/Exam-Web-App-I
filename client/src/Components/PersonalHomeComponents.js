@@ -45,8 +45,10 @@ function PersonalHome(props) {
   const [oldStudyplan, setOldStudyplan] = useState([]);
   const [studyplan, setStudyplan] = useState([]);
   const [edit, setEdit] = useState(false);
+  const [spLoading, setSpLoading] = useState(true);
 
   const getStudyplan = async () => {
+    setSpLoading(true);
     try {
       const studyplan = await API.getStudyplan();
       setStudyplanOption(studyplan.option);
@@ -55,6 +57,7 @@ function PersonalHome(props) {
     } catch (err) {
       toast.error("Server Error !");
     }
+    setSpLoading(false);
   };
 
   const deleteStudyplan = () => {
@@ -68,7 +71,7 @@ function PersonalHome(props) {
         }),
       {
         pending: "Deleting Study Plan",
-        success: "Study Plan deleted !",
+        success: "Study Plan has been deleted !",
         error: "Server Error !",
       }
     );
@@ -91,7 +94,7 @@ function PersonalHome(props) {
         }),
       {
         pending: "Saving Study Plan",
-        success: "Study Plan saved !",
+        success: "Study Plan has been saved !",
         error: {
           render({ data }) {
             return `Error : ${data} !`;
@@ -108,7 +111,7 @@ function PersonalHome(props) {
       }),
       {
         pending: "Resetting Study Plan",
-        success: "Study Plan resetted",
+        success: "Study Plan has been reset",
         error: "Server Error !",
       }
     );
@@ -131,6 +134,7 @@ function PersonalHome(props) {
       <Navbar
         logOutButton
         studyplanButton
+        loading={props.loading || spLoading}
         studyplan={studyplanOption}
         saveStudyplan={saveStudyplan}
         deleteStudyplan={deleteStudyplan}
