@@ -69,19 +69,18 @@ INSERT INTO "incompatibleCourses" ("code_1","code_2") VALUES ('01SQJOV','01SQMOV
 INSERT INTO "incompatibleCourses" ("code_1","code_2") VALUES ('01SQJOV','01SQLOV');
 INSERT INTO "incompatibleCourses" ("code_1","code_2") VALUES ('01SQMOV','01SQLOV');
 INSERT INTO "incompatibleCourses" ("code_1","code_2") VALUES ('01OTWOV','02KPNOV');
-INSERT INTO "incompatibleCourses" ("code_1","code_2") VALUES ('02KPNOV','01UDUOV');
+INSERT INTO "incompatibleCourses" ("code_1","code_2") VALUES ('01TYMOV','01UDUOV');
 INSERT INTO "incompatibleCourses" ("code_1","code_2") VALUES ('05BIDOV','04GSPOV');
 INSERT INTO "incompatibleCourses" ("code_1","code_2") VALUES ('01UDFOV','01TXYOV');
 INSERT INTO "incompatibleCourses" ("code_1","code_2") VALUES ('01TXYOV','01UDFOV');
 INSERT INTO "incompatibleCourses" ("code_1","code_2") VALUES ('02GRSOV','01NYHOV');
 
 
-
 INSERT INTO "students" ("id","username","salt","hash","studyplan") VALUES (1,'test1@uni.edu','80c6bd19d02ade025ff4618870d007ba','434458142bf7b4cff5a1b7edebd6416b0586f788e4e0221c1c0e675f8505243970a1398b40a1ca44c4e7c89cb4247ae8794ecd47d022cdab5f1554092e362d20','part-time');
-INSERT INTO "students" ("id","username","salt","hash","studyplan") VALUES (2,'test2@uni.edu','80c6bd19d02ade025ff4618870d007ba','434458142bf7b4cff5a1b7edebd6416b0586f788e4e0221c1c0e675f8505243970a1398b40a1ca44c4e7c89cb4247ae8794ecd47d022cdab5f1554092e362d20','full-time');
-INSERT INTO "students" ("id","username","salt","hash","studyplan") VALUES (3,'test3@uni.edu','80c6bd19d02ade025ff4618870d007ba','434458142bf7b4cff5a1b7edebd6416b0586f788e4e0221c1c0e675f8505243970a1398b40a1ca44c4e7c89cb4247ae8794ecd47d022cdab5f1554092e362d20','full-time');
-INSERT INTO "students" ("id","username","salt","hash","studyplan") VALUES (4,'test4@uni.edu','80c6bd19d02ade025ff4618870d007ba','434458142bf7b4cff5a1b7edebd6416b0586f788e4e0221c1c0e675f8505243970a1398b40a1ca44c4e7c89cb4247ae8794ecd47d022cdab5f1554092e362d20','part-time');
-INSERT INTO "students" ("id","username","salt","hash","studyplan") VALUES (5,'test5@uni.edu','80c6bd19d02ade025ff4618870d007ba','434458142bf7b4cff5a1b7edebd6416b0586f788e4e0221c1c0e675f8505243970a1398b40a1ca44c4e7c89cb4247ae8794ecd47d022cdab5f1554092e362d20',NULL);
+INSERT INTO "students" ("id","username","salt","hash","studyplan") VALUES (2,'test2@uni.edu','0f1d754f553a92b31c4d0db90f5aa6eb','2aae4045823a19db91b5ef167d0c4451736332be7f2889ee6d2e4e795a7b98235c5de36e4d7425a1bcd58a5bf2707edb2478c1e65ea1f8f1d54c1250634c1c17','full-time');
+INSERT INTO "students" ("id","username","salt","hash","studyplan") VALUES (3,'test3@uni.edu','954efa664a6b5cc76879f123f0ab846f','74d8eca7c0dbc1b26c74f17ef8001b3f28720cfa215b6d98f6ad96fadc4701b861b514ec38233119f2f822d757d063c90463aee6e5b165af20f702a35ac85aa9','full-time');
+INSERT INTO "students" ("id","username","salt","hash","studyplan") VALUES (4,'test4@uni.edu','3c67ef1f895e998a058d235324ffa986','539d7b5b30bd1e5456c2fcf75f2ae07c6244b68b45cf37b18fe871cb83aa9bfdc90024677c40b3ce8188c7bbe2a9e654eca4615a4e20713711e6b65c5bb38145','part-time');
+INSERT INTO "students" ("id","username","salt","hash","studyplan") VALUES (5,'test5@uni.edu','c77d5ca56c56f2ce07e8cffe5cfae0e8','6a17c4ef98055e779317e5b0b8a7ffc824e90fe77e413d001504dcc09b6714580c88aaad1b97e428cf9f45f8fd543b874ced25f97cf6efaaa10fa37a5bc97d77',NULL);
 
 INSERT INTO "studyPlans" ("studentID","courseID") VALUES (1,'01UDFOV');
 INSERT INTO "studyPlans" ("studentID","courseID") VALUES (1,'03UEWOV');
@@ -104,7 +103,6 @@ INSERT INTO "studyPlans" ("studentID","courseID") VALUES (3,'01NYHOV');
 INSERT INTO "studyPlans" ("studentID","courseID") VALUES (3,'01TXYOV');
 INSERT INTO "studyPlans" ("studentID","courseID") VALUES (3,'01TXSOV');
 INSERT INTO "studyPlans" ("studentID","courseID") VALUES (3,'01TYDOV');
-INSERT INTO "studyPlans" ("studentID","courseID") VALUES (3,'01UDUOV');
 INSERT INTO "studyPlans" ("studentID","courseID") VALUES (3,'01SQOOV');
 INSERT INTO "studyPlans" ("studentID","courseID") VALUES (3,'01SQMOV');
 INSERT INTO "studyPlans" ("studentID","courseID") VALUES (3,'01TYMOV');
