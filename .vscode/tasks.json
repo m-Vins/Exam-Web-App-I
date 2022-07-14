@@ -1,0 +1,45 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "type": "shell",
+      "command": "cd server;nodemon index.js",
+      "label": "start server",
+      "problemMatcher": [],
+      "detail": "start server with nodemon"
+    },
+    {
+      "type": "npm",
+      "script": "start",
+      "path": "client",
+      "problemMatcher": [],
+      "label": "start client",
+      "detail": "react-scripts start"
+    },
+    {
+      "type": "npm",
+      "script": "install",
+      "path": "server",
+      "group": "clean",
+      "problemMatcher": [],
+      "label": "npm: install - server",
+      "detail": "install dependencies from package"
+    },
+    {
+      "type": "npm",
+      "script": "install",
+      "path": "client",
+      "group": "clean",
+      "problemMatcher": [],
+      "label": "npm: install - client",
+      "detail": "install dependencies from package"
+    },
+    {
+      "type": "shell",
+      "command": "cd server;node initDB.js",
+      "label": "clean database",
+      "problemMatcher": [],
+      "detail": "clean database with default users"
+    }
+  ]
+}
